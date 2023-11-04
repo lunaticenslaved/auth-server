@@ -1,6 +1,6 @@
 import express from 'express';
 
-// import { prisma } from '@/prisma';
+import { prisma } from '@/prisma';
 
 import cors from 'cors';
 import bodyParser from 'body-parser';
@@ -10,7 +10,7 @@ import fileUpload from 'express-fileupload';
 const PORT = 3000;
 
 export async function createApp() {
-  // await prisma.$connect();
+  await prisma.$connect();
 
   const app = express();
 

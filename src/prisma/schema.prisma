@@ -6,3 +6,40 @@ datasource db {
 generator client {
   provider = "prisma-client-js"
 }
+
+
+model User {
+  id       String    @id @default(uuid())
+  login    String    @db.VarChar(255)
+  password String    @db.Text
+  
+  sessions Session[]
+  avatars  Avatar[]
+
+  @@map("users")
+}
+
+
+model Session {
+  id String @id @default(uuid())
+
+  accessToken  String  @db.Text
+  refreshToken String  @db.Text
+  userAgent    String? @db.Text
+
+  user   User   @relation(fields: [userId], references: [id], onDelete: Cascade)
+  userId String
+
+  @@map("sessions")
+}
+
+model Avatar {
+  id String @id @default(uuid())
+
+  link String @db.Text
+
+  user   User   @relation(fields: [userId], references: [id], onDelete: Cascade)
+  userId String
+
+  @@map("avatars")
+}
