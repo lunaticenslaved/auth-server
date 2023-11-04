@@ -1,0 +1,50 @@
+{
+  "ts-node": {
+    "require": ["tsconfig-paths/register"],
+    "files": true
+  },
+  "tsc-alias": {
+    "verbose": false,
+    "resolveFullPaths": true
+  },
+  "compilerOptions": {
+    "target": "ESNext",
+    "lib": ["ESNext"],
+    "skipLibCheck": true,
+    "composite": false,
+    "declaration": false,
+    "declarationMap": false,
+
+    /* Bundler mode */
+    "useDefineForClassFields": false,
+    "esModuleInterop": true,
+    "module": "NodeNext",
+    "types": ["node"],
+    "moduleResolution": "NodeNext",
+    "allowSyntheticDefaultImports": true,
+    "resolveJsonModule": true,
+    "isolatedModules": true,
+    "emitDecoratorMetadata": true,
+
+    /* Linting */
+    "strict": true,
+    "noUnusedLocals": true,
+    "noUnusedParameters": true,
+    "noImplicitOverride": true,
+    "noFallthroughCasesInSwitch": true,
+    "noImplicitAny": true,
+    "forceConsistentCasingInFileNames": true,
+
+    /* Language features */
+    "experimentalDecorators": true,
+
+    /* Paths */
+    "outDir": "./dist",
+    "rootDir": "./src",
+    "baseUrl": ".",
+    "paths": {
+      "@/*": ["./src/*"]
+    }
+  },
+  "include": ["./src"]
+}
