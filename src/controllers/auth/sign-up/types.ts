@@ -1,4 +1,4 @@
-import { User } from '@/models/user';
+import { UserDTO } from '@/dto';
 
 export type SignUpRequest = {
   login: string;
@@ -6,5 +6,5 @@ export type SignUpRequest = {
 };
 
 export type SignUpResponse = {
-  user: User;
+  user: UserDTO.User;
 };

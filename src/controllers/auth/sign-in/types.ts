@@ -1,4 +1,4 @@
-import { User } from '@/models/user';
+import { UserDTO } from '@/dto';
 
 export type SignInRequest = {
   login: string;
@@ -6,5 +6,5 @@ export type SignInRequest = {
 };
 
 export type SignInResponse = {
-  user: User;
+  user: UserDTO.User;
 };

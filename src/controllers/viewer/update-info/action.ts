@@ -1,5 +1,5 @@
 import { Context } from '@/context';
-import { User, getUserSelector } from '@/models/user';
+import { UserDTO } from '@/dto';
 import { Validators, validateRequest } from '@/utils';
 
 type Request = {
@@ -8,7 +8,7 @@ type Request = {
 };
 
 type Response = {
-  user: User;
+  user: UserDTO.User;
 };
 
 const validators = {
@@ -25,8 +25,8 @@ export async function updateInfo(request: Request, context: Context): Promise<Re
     data: {
       login: { set: request.login },
     },
-    select: getUserSelector(),
+    select: UserDTO.selector,
   });
 
-  return { user };
+  return { user: UserDTO.prepare(user) };
 }

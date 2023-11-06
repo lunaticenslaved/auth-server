@@ -1,9 +1,9 @@
-import { User } from '@/models/user';
+import { UserDTO } from '@/dto';
 
 export type UpdateInfoRequest = {
   login: string;
 };
 
 export type UpdateInfoResponse = {
-  user: User;
+  user: UserDTO.User;
 };

@@ -41,5 +41,7 @@ model Avatar {
   user   User   @relation(fields: [userId], references: [id], onDelete: Cascade)
   userId String
 
+  isCurrent Boolean @default(false)
+
   @@map("avatars")
 }

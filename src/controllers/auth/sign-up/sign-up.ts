@@ -1,5 +1,6 @@
 import { Context } from '@/context';
 import { Validators, createHash, createTokens, validateRequest } from '@/utils';
+import { UserDTO } from '@/dto';
 
 import { SignUpRequest, SignUpResponse } from './types';
 import { createUserWithLoginExistsError } from './errors';
@@ -34,11 +35,7 @@ export async function signUp(data: Request, context: Context): Promise<Response>
       login: data.login,
       password: hashedPassword,
     },
-    select: {
-      id: true,
-      login: true,
-      avatars: true,
-    },
+    select: UserDTO.selector,
   });
 
   const { refreshToken, accessToken } = createTokens();
@@ -51,5 +48,8 @@ export async function signUp(data: Request, context: Context): Promise<Response>
     },
   });
 
-  return { user: createdUser, accessToken };
+  return {
+    accessToken,
+    user: UserDTO.prepare(createdUser),
+  };
 }

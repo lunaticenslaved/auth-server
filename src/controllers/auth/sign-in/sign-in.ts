@@ -2,6 +2,7 @@ import bcrypt from 'bcrypt';
 
 import { ValidationObject, Validators, createTokens, validateRequest } from '@/utils';
 import { Context } from '@/context';
+import { UserDTO } from '@/dto';
 
 import { createInvalidPasswordError, createUserWithLoginNotExistsError } from './errors';
 import { SignInRequest, SignInResponse } from './types';
@@ -24,7 +25,7 @@ export const signIn = async (request: Request, context: Context): Promise<Respon
 
   const user = await context.prisma.user.findFirst({
     where: { login: { equals: request.login } },
-    select: { id: true, avatars: true, password: true, login: true },
+    select: { ...UserDTO.selector, password: true },
   });
 
   if (!user) {
@@ -68,5 +69,8 @@ export const signIn = async (request: Request, context: Context): Promise<Respon
     });
   }
 
-  return { user: savedUser, accessToken };
+  return {
+    accessToken,
+    user: UserDTO.prepare(savedUser),
+  };
 };

@@ -1,7 +1,7 @@
 import bcrypt from 'bcrypt';
 
 import { Validators, createHash, validateRequest } from '@/utils';
-import { getUserSelector } from '@/models/user';
+import { UserDTO } from '@/dto';
 import { Context } from '@/context';
 
 import { createIncorrectPasswordError, createSamePasswordError } from './errors';
@@ -54,8 +54,8 @@ export async function updatePassword(request: Request, context: Context): Promis
         set: await createHash(newPassword),
       },
     },
-    select: getUserSelector(),
+    select: UserDTO.selector,
   });
 
-  return { user: updatedUser };
+  return { user: UserDTO.prepare(updatedUser) };
 }

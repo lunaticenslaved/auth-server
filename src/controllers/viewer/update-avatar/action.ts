@@ -1,5 +1,5 @@
 import { Context } from '@/context';
-import { getUserSelector } from '@/models/user';
+import { UserDTO } from '@/dto';
 import { Validators, validateRequest } from '@/utils';
 
 import { UpdateAvatarRequest, UpdateAvatarResponse } from './types';
@@ -27,8 +27,8 @@ export async function updateAvatar(request: Request, context: Context): Promise<
         create: { link },
       },
     },
-    select: getUserSelector(),
+    select: UserDTO.selector,
   });
 
-  return { user };
+  return { user: UserDTO.prepare(user) };
 }
