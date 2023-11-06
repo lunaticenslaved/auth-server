@@ -4,7 +4,7 @@ COPY /src .
 COPY /prisma .
 COPY /package.json .
 COPY /package-lock.json .
-RUN npm ci \
+RUN npm ci --ignore-scripts \
     && npm run prisma:generate \
     && npm run build \
     && npm run db:migrate:prod
