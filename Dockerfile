@@ -1,6 +1,9 @@
 FROM node:20 AS build
 WORKDIR /app
-COPY . .
+COPY /src .
+COPY /prisma .
+COPY /package.json .
+COPY /package-lock.json .
 RUN npm ci \
     && npm run prisma:generate \
     && npm run build \
@@ -8,9 +11,10 @@ RUN npm ci \
 
 FROM node:20-slim
 WORKDIR /app
-COPY --from=build /app/dist /app 
 RUN addgroup --system auth\
     && adduser -S -s /bin/false -G auth auth -D -H 
+COPY --chown=auth:auth \
+--from=build /app/dist /app 
 USER auth
 EXPOSE 3000
 ENTRYPOINT ["npm ","run ","start"]
