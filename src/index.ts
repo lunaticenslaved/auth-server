@@ -1,13 +1,12 @@
 import express from 'express';
-
-import { prisma } from '@/prisma';
-
 import cors from 'cors';
 import bodyParser from 'body-parser';
 import cookieParser from 'cookie-parser';
 import fileUpload from 'express-fileupload';
 
-const PORT = 3000;
+import { prisma } from '@/services/prisma';
+import { Constants } from '@/utils';
+import { addRouter } from '@/controllers';
 
 export async function createApp() {
   await prisma.$connect();
@@ -23,12 +22,13 @@ export async function createApp() {
   app.use(bodyParser.json());
   app.use(bodyParser.urlencoded({ extended: false }));
 
-  app.listen(PORT, () => {
+  addRouter(app);
+
+  app.listen(Constants.PORT, () => {
     console.log(
-      `  ➜ 🎸 [DEV] Server is listening on port: ${PORT}. Use this server: http://localhost:${PORT}`,
+      `  ➜ 🎸 [DEV] Server is listening on port: ${Constants.PORT}. Use this server: http://localhost:${Constants.PORT}`,
     );
   });
 }
-
 
 createApp();

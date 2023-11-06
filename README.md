@@ -26,3 +26,10 @@
 ##### Add deploy
 
 - add script `deploy`
+
+
+##### Add jest
+
+- `npm i -D jest @types/jest ts-jest`
+- run `npx jest --init`
+- add `"jest"` to `"types"` in `tsconfig`

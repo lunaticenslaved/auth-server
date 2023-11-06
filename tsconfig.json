@@ -19,7 +19,7 @@
     "useDefineForClassFields": false,
     "esModuleInterop": true,
     "module": "NodeNext",
-    "types": ["node"],
+    "types": ["node", "jest"],
     "moduleResolution": "NodeNext",
     "allowSyntheticDefaultImports": true,
     "resolveJsonModule": true,
