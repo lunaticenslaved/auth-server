@@ -1,5 +1,4 @@
 FROM node:20 AS build
-
 WORKDIR /app
 COPY /src ./src
 COPY /prisma .
@@ -10,16 +9,13 @@ RUN npm ci --ignore-scripts \
     && npm run prisma:generate \
     && npm run build
 
-
 FROM node:20-slim
-
 WORKDIR /app
 RUN addgroup --system auth\
     && adduser -S -s /bin/false -G auth auth -D -H \
     && chmod -R 755 /app
-COPY --from=build /app/dist /app 
-
-
+COPY --chown=auth:auth \
+    --from=build /app/dist /app 
 USER auth
 EXPOSE 3000
 ENTRYPOINT ["npm ","run ","start"]
