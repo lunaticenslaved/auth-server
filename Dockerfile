@@ -16,4 +16,4 @@ RUN addgroup --system auth\
     && chmod -R 755 /app
 COPY --from=build /app/dist /app 
 EXPOSE 3000
-ENTRYPOINT ["npm ","run ","start"]
+ENTRYPOINT ["npm","run ","start"]
