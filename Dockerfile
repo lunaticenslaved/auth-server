@@ -12,7 +12,7 @@ RUN npm ci --ignore-scripts \
 FROM node:20-slim
 WORKDIR /app
 COPY --from=build /app/package.json /app 
-RUN npm i --omit=dev
+RUN npm i --omit=dev --ignore-scripts
 COPY --from=build /app/dist /app 
 EXPOSE 3000
 ENTRYPOINT ["node","index.js"]
