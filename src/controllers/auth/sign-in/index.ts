@@ -1,5 +1,5 @@
-import { createOperation } from '@/utils';
-import { ValidationError } from '@/errors';
+import { createOperation } from '#/utils';
+import { ValidationError } from '#/errors';
 
 import { signIn as action } from './sign-in';
 import { SignInRequest, SignInResponse } from './types';

@@ -1,5 +1,5 @@
-import { Mock } from '@/__mocks__';
-import { ValidationError } from '@/errors';
+import { Mock } from '#/__mocks__';
+import { ValidationError } from '#/errors';
 
 import { updateInfo } from './action';
 

@@ -1,4 +1,4 @@
-import { createOperation, getUserFromRequest } from '@/utils';
+import { createOperation, getUserFromRequest } from '#/utils';
 
 import { UpdatePasswordRequest, UpdatePasswordResponse } from './types';
 import { updatePassword as action } from './action';

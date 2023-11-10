@@ -1,4 +1,4 @@
-import { Mock } from '@/__mocks__';
+import { Mock } from '#/__mocks__';
 
 import { signUp } from '../sign-up/sign-up';
 import { logout } from './action';

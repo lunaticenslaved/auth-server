@@ -1,4 +1,4 @@
-import { createOperation } from '@/utils';
+import { createOperation } from '#/utils';
 
 import { logout as action } from './action';
 

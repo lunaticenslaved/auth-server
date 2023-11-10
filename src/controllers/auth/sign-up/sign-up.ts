@@ -1,6 +1,6 @@
-import { Context } from '@/context';
-import { Validators, createHash, createTokens, validateRequest } from '@/utils';
-import { UserDTO } from '@/dto';
+import { Context } from '#/context';
+import { Validators, createHash, createTokens, validateRequest } from '#/utils';
+import { UserDTO } from '#/dto';
 
 import { SignUpRequest, SignUpResponse } from './types';
 import { createUserWithLoginExistsError } from './errors';

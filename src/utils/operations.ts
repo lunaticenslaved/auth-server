@@ -1,7 +1,7 @@
 import { Request, Response } from 'express';
 
-import { Context, context } from '@/context';
-import { ApiError, UnknownError } from '@/errors';
+import { Context, context } from '#/context';
+import { ApiError, UnknownError } from '#/errors';
 
 export type OperationResponse<TData> =
   | {

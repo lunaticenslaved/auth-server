@@ -1,6 +1,6 @@
-import { Context } from '@/context';
-import { UserDTO } from '@/dto';
-import { Validators, validateRequest } from '@/utils';
+import { Context } from '#/context';
+import { UserDTO } from '#/dto';
+import { Validators, validateRequest } from '#/utils';
 
 import { UpdateAvatarRequest, UpdateAvatarResponse } from './types';
 

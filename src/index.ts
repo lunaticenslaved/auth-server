@@ -4,9 +4,9 @@ import bodyParser from 'body-parser';
 import cookieParser from 'cookie-parser';
 import fileUpload from 'express-fileupload';
 
-import { prisma } from '@/services/prisma';
-import { Constants } from '@/utils';
-import { addRouter } from '@/controllers';
+import { prisma } from '#/services/prisma';
+import { Constants } from '#/utils';
+import { addRouter } from '#/controllers';
 
 export async function createApp() {
   await prisma.$connect();

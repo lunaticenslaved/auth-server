@@ -1,4 +1,4 @@
-import { AuthenticationError } from '@/errors';
+import { AuthenticationError } from '#/errors';
 
 export function createUserWithLoginNotExistsError(login: string) {
   return new AuthenticationError({ errors: [`User with the login '${login}' not found`] });

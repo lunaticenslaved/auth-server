@@ -1,6 +1,6 @@
-import { addUserFromCookie, checkAuth } from '@/middlewares';
+import { addUserFromCookie, checkAuth } from '#/middlewares';
 
-import { createRoutes } from '@/utils';
+import { createRoutes } from '#/utils';
 
 import { updatePassword } from './update-password';
 import { updateInfo } from './update-info';

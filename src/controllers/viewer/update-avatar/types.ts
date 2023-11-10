@@ -1,6 +1,6 @@
 import { UploadedFile } from 'express-fileupload';
 
-import { UserDTO } from '@/dto';
+import { UserDTO } from '#/dto';
 
 export type UpdateAvatarRequest = {
   avatar: UploadedFile;

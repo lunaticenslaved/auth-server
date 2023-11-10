@@ -1,8 +1,8 @@
 import bcrypt from 'bcrypt';
 
-import { Validators, createHash, validateRequest } from '@/utils';
-import { UserDTO } from '@/dto';
-import { Context } from '@/context';
+import { Validators, createHash, validateRequest } from '#/utils';
+import { UserDTO } from '#/dto';
+import { Context } from '#/context';
 
 import { createIncorrectPasswordError, createSamePasswordError } from './errors';
 import { UpdatePasswordRequest, UpdatePasswordResponse } from './types';

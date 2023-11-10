@@ -1,4 +1,4 @@
-import { ValidationError } from '@/errors';
+import { ValidationError } from '#/errors';
 
 export type ValidationResult = null | string | undefined;
 export type Validator<T> = (params?: T) => Promise<ValidationResult> | ValidationResult;

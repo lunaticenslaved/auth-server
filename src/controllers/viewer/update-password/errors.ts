@@ -1,4 +1,4 @@
-import { AuthenticationError, ValidationError } from '@/errors';
+import { AuthenticationError, ValidationError } from '#/errors';
 
 export function createIncorrectPasswordError() {
   return new AuthenticationError({ errors: [`Password is incorrect`] });

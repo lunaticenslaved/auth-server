@@ -1,6 +1,6 @@
 import { z } from 'zod';
 
-import { Validator } from '@/utils';
+import { Validator } from '#/utils';
 
 export const required =
   (message: string = 'Value is required'): Validator<unknown> =>

@@ -1,8 +1,8 @@
 import bcrypt from 'bcrypt';
 
-import { ValidationObject, Validators, createTokens, validateRequest } from '@/utils';
-import { Context } from '@/context';
-import { UserDTO } from '@/dto';
+import { ValidationObject, Validators, createTokens, validateRequest } from '#/utils';
+import { Context } from '#/context';
+import { UserDTO } from '#/dto';
 
 import { createInvalidPasswordError, createUserWithLoginNotExistsError } from './errors';
 import { SignInRequest, SignInResponse } from './types';

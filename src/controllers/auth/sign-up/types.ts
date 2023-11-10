@@ -1,4 +1,4 @@
-import { UserDTO } from '@/dto';
+import { UserDTO } from '#/dto';
 
 export type SignUpRequest = {
   login: string;

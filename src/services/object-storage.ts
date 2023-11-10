@@ -2,7 +2,7 @@ import { PutObjectCommand, S3Client } from '@aws-sdk/client-s3';
 import { UploadedFile } from 'express-fileupload';
 import { randomUUID } from 'node:crypto';
 
-import { Constants } from '@/utils';
+import { Constants } from '#/utils';
 
 export interface IObjectStorageService {
   uploadFile(file: UploadedFile): Promise<{ link: string }>;

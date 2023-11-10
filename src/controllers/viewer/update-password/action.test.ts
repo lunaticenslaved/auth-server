@@ -1,5 +1,5 @@
-import { Mock } from '@/__mocks__';
-import { ValidationError } from '@/errors';
+import { Mock } from '#/__mocks__';
+import { ValidationError } from '#/errors';
 
 import { updatePassword } from './action';
 import { createIncorrectPasswordError, createSamePasswordError } from './errors';

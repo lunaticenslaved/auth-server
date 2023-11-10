@@ -1,6 +1,5 @@
-import { addUserFromCookie } from '@/middlewares';
-
-import { createRoutes } from '@/utils';
+import { addUserFromCookie } from '#/middlewares';
+import { createRoutes } from '#/utils';
 
 import { signIn } from './sign-in';
 import { signUp } from './sign-up';

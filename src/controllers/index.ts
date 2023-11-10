@@ -1,6 +1,6 @@
 import { Express } from 'express';
 
-import { NotFoundError } from '@/errors';
+import { NotFoundError } from '#/errors';
 
 import { addAuthRoutes } from './auth';
 import { addViewerRoutes } from './viewer';

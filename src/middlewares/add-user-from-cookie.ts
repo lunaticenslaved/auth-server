@@ -1,6 +1,6 @@
 import { NextFunction, Request, Response } from 'express';
 
-import { context } from '@/context';
+import { context } from '#/context';
 
 export async function addUserFromCookie(request: Request, _: Response, next: NextFunction) {
   const { cookies } = request;

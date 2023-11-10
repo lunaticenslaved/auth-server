@@ -2,8 +2,8 @@ import { Express, Request } from 'express';
 import bcrypt from 'bcrypt';
 import jwt from 'jsonwebtoken';
 
-import { Constants } from '@/utils';
-import { UnauthorizedError } from '@/errors';
+import { Constants } from '#/utils';
+import { UnauthorizedError } from '#/errors';
 
 export const createRoutes = (fn: (app: Express) => void) => (app: Express) => {
   fn(app);

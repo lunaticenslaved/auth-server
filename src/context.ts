@@ -1,5 +1,5 @@
 import { PrismaClient } from '@prisma/client';
-import { prisma, storage, Storage } from '@/services';
+import { prisma, storage, Storage } from '#/services';
 
 export type Context = {
   prisma: PrismaClient;

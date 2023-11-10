@@ -1,5 +1,6 @@
-import { Context } from '@/context';
 import { User } from '@prisma/client';
+
+import { Context } from '#/context';
 
 type Request = {
   userId: User['id'];

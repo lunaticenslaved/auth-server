@@ -1,6 +1,6 @@
 import { UploadedFile } from 'express-fileupload';
 
-import { Mock } from '@/__mocks__';
+import { Mock } from '#/__mocks__';
 
 import { updateAvatar } from './action';
 
