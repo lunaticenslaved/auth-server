@@ -14,5 +14,6 @@ WORKDIR /app
 COPY --from=build /app/package.json /app 
 RUN npm i --omit=dev
 COPY --from=build /app/dist /app 
+USER 1000
 EXPOSE 3000
 ENTRYPOINT ["node","index.js"]
