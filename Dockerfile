@@ -14,7 +14,7 @@ WORKDIR /app
 COPY --from=build /app/package.json /app 
 COPY --from=build /app/schema.prisma /app 
 RUN apt-get update -y \ 
-    && apt-get install -y openssl \
+    && apt-get --no-cache install -y openssl \
     && npm i --omit=dev \ 
     && npx prisma generate
 COPY --from=build /app/dist /app 
