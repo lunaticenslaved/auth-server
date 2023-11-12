@@ -1,13 +1,15 @@
-import { Context } from '#/context';
-import { Validators, createHash, createTokens, validateRequest } from '#/utils';
-import { UserDTO } from '#/dto';
+import { Schema } from '@lunaticenslaved/schema';
 
-import { SignUpRequest, SignUpResponse } from './types';
+import { Context } from '#/context';
+import { UserDTO } from '#/dto';
+import { createHash, createTokens } from '#/utils';
+
 import { createUserWithLoginExistsError } from './errors';
+import { SignUpRequest, SignUpResponse } from './types';
 
 const validators = {
-  login: Validators.login,
-  password: Validators.newPassword,
+  login: Schema.Validators.login,
+  password: Schema.Validators.newPassword,
 };
 
 export type Request = SignUpRequest & {
@@ -19,7 +21,7 @@ export type Response = SignUpResponse & {
 };
 
 export async function signUp(data: Request, context: Context): Promise<Response> {
-  await validateRequest(validators, data);
+  await Schema.Validation.validateRequest(validators, data);
 
   const user = await context.prisma.user.findFirst({
     where: { login: { equals: data.login } },

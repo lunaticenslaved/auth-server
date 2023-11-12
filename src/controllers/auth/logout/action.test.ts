@@ -1,6 +1,5 @@
 import { Mock } from '#/__mocks__';
 
-import { signUp } from '../sign-up/sign-up';
 import { logout } from './action';
 
 test('session was deleted', async () => {
@@ -10,7 +9,7 @@ test('session was deleted', async () => {
     password: 'password',
   };
 
-  const { user, accessToken } = await signUp(data, Mock.context);
+  const { user, accessToken } = await Mock.utils.createUser(data);
 
   async function getSession() {
     return (

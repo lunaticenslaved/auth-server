@@ -1,8 +1,10 @@
 import bcrypt from 'bcrypt';
 
-import { ValidationObject, Validators, createTokens, validateRequest } from '#/utils';
+import { Schema } from '@lunaticenslaved/schema';
+
 import { Context } from '#/context';
 import { UserDTO } from '#/dto';
+import { createTokens } from '#/utils';
 
 import { createInvalidPasswordError, createUserWithLoginNotExistsError } from './errors';
 import { SignInRequest, SignInResponse } from './types';
@@ -15,13 +17,13 @@ type Response = SignInResponse & {
   accessToken: string;
 };
 
-const validators: ValidationObject = {
-  login: Validators.login,
-  password: Validators.newPassword,
+const validators = {
+  login: Schema.Validators.login,
+  password: Schema.Validators.required('Password is required'),
 };
 
 export const signIn = async (request: Request, context: Context): Promise<Response> => {
-  await validateRequest(validators, request);
+  await Schema.Validation.validateRequest(validators, request);
 
   const user = await context.prisma.user.findFirst({
     where: { login: { equals: request.login } },

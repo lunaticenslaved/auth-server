@@ -1,6 +1,7 @@
+import { Validation, Validators } from '@lunaticenslaved/schema';
+
 import { Context } from '#/context';
 import { UserDTO } from '#/dto';
-import { Validators, validateRequest } from '#/utils';
 
 import { UpdateAvatarRequest, UpdateAvatarResponse } from './types';
 
@@ -15,7 +16,7 @@ const validators = {
 };
 
 export async function updateAvatar(request: Request, context: Context): Promise<Response> {
-  await validateRequest(validators, request);
+  await Validation.validateRequest(validators, request);
 
   const { link } = await context.storage.avatar.uploadFile(request.avatar);
   const user = await context.prisma.user.update({

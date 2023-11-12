@@ -1,10 +1,9 @@
 import { addUserFromCookie, checkAuth } from '#/middlewares';
-
 import { createRoutes } from '#/utils';
 
-import { updatePassword } from './update-password';
-import { updateInfo } from './update-info';
 import { updateAvatar } from './update-avatar';
+import { updateInfo } from './update-info';
+import { updatePassword } from './update-password';
 
 export const addViewerRoutes = createRoutes(app => {
   app.post('/api/viewer/password', addUserFromCookie, checkAuth, updatePassword);

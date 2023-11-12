@@ -1,9 +1,11 @@
 import { Express, Request } from 'express';
+
 import bcrypt from 'bcrypt';
 import jwt from 'jsonwebtoken';
 
+import { Error } from '@lunaticenslaved/schema';
+
 import { Constants } from '#/utils';
-import { UnauthorizedError } from '#/errors';
 
 export const createRoutes = (fn: (app: Express) => void) => (app: Express) => {
   fn(app);
@@ -28,7 +30,10 @@ export const getUserFromRequest = (request: Request<unknown, unknown, unknown, u
   const user = request.user;
 
   if (!user) {
-    throw new UnauthorizedError({ errors: ['User not found'], status: 403 });
+    throw new Error.UnauthorizedError({
+      messages: 'User not found',
+      status: 403,
+    });
   }
 
   return user;

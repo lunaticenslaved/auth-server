@@ -1,6 +1,7 @@
+import { Validation, Validators } from '@lunaticenslaved/schema';
+
 import { Context } from '#/context';
 import { UserDTO } from '#/dto';
-import { Validators, validateRequest } from '#/utils';
 
 type Request = {
   userId: string;
@@ -16,7 +17,7 @@ const validators = {
 };
 
 export async function updateInfo(request: Request, context: Context): Promise<Response> {
-  await validateRequest(validators, request);
+  await Validation.validateRequest(validators, request);
 
   const user = await context.prisma.user.update({
     where: {

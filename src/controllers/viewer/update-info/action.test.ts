@@ -1,5 +1,6 @@
+import { Error } from '@lunaticenslaved/schema';
+
 import { Mock } from '#/__mocks__';
-import { ValidationError } from '#/errors';
 
 import { updateInfo } from './action';
 
@@ -18,7 +19,7 @@ test('login is required', async () => {
     Mock.context,
   );
 
-  await expect(promise).rejects.toThrow(ValidationError);
+  await expect(promise).rejects.toThrow(Error.ValidationError);
 });
 
 test('can change login', async () => {

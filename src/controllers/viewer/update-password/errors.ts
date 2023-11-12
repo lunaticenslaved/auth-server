@@ -1,9 +1,11 @@
-import { AuthenticationError, ValidationError } from '#/errors';
+import { Error } from '@lunaticenslaved/schema';
 
 export function createIncorrectPasswordError() {
-  return new AuthenticationError({ errors: [`Password is incorrect`] });
+  return new Error.AuthenticationError({ messages: [`Password is incorrect`] });
 }
 
 export function createSamePasswordError() {
-  return new ValidationError({ errors: ['New password cannot be the same'] });
+  return new Error.ValidationError({
+    messages: ['New password cannot be the same'],
+  });
 }
