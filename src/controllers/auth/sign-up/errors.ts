@@ -1,5 +1,5 @@
-import { ConflictError } from '#/errors';
+import { Error } from '@lunaticenslaved/schema';
 
 export function createUserWithLoginExistsError(login: string) {
-  return new ConflictError({ errors: [`User with the login '${login}' already exists`] });
+  return new Error.ConflictError({ messages: [`User with the login '${login}' already exists`] });
 }

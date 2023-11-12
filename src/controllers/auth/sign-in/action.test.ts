@@ -1,10 +1,9 @@
+import { Error } from '@lunaticenslaved/schema';
+
 import { Mock } from '#/__mocks__';
-import { ValidationError } from '#/errors';
 
-import { signIn } from './sign-in';
+import { signIn } from './action';
 import { createUserWithLoginNotExistsError, createInvalidPasswordError } from './errors';
-
-import { signUp } from '../sign-up/sign-up';
 
 describe('test validation', () => {
   test('cannot sign in without password', async () => {
@@ -17,7 +16,7 @@ describe('test validation', () => {
       Mock.context,
     );
 
-    await expect(promise).rejects.toThrow(ValidationError);
+    await expect(promise).rejects.toThrow(Error.ValidationError);
   });
 
   test('cannot sign in without login', async () => {
@@ -30,7 +29,7 @@ describe('test validation', () => {
       Mock.context,
     );
 
-    await expect(promise).rejects.toThrow(ValidationError);
+    await expect(promise).rejects.toThrow(Error.ValidationError);
   });
 });
 
@@ -54,9 +53,9 @@ test('cannot sign in because of invalid password', async () => {
     password: 'password',
   };
 
-  await signUp(data, Mock.context);
+  await Mock.utils.createUser(data);
 
-  const promise = signUp(
+  const promise = signIn(
     {
       ...data,
       password: 'invalid password',

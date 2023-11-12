@@ -1,6 +1,8 @@
 import bcrypt from 'bcrypt';
 
-import { Validators, createHash, validateRequest } from '#/utils';
+import { Validation, Validators } from '@lunaticenslaved/schema';
+
+import { createHash } from '#/utils';
 import { UserDTO } from '#/dto';
 import { Context } from '#/context';
 
@@ -19,7 +21,7 @@ const validators = {
 };
 
 export async function updatePassword(request: Request, context: Context): Promise<Response> {
-  await validateRequest(validators, request);
+  await Validation.validateRequest(validators, request);
 
   const user = await context.prisma.user.findFirst({
     where: {

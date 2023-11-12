@@ -1,6 +1,6 @@
 import { Express } from 'express';
 
-import { NotFoundError } from '#/errors';
+import { Error } from '@lunaticenslaved/schema';
 
 import { addAuthRoutes } from './auth';
 import { addViewerRoutes } from './viewer';
@@ -11,8 +11,8 @@ export const addRouter = (app: Express) => {
 
   app.use('/api/*', (_, response) => {
     response.status(404).json(
-      new NotFoundError({
-        errors: ['Resource not found'],
+      new Error.NotFoundError({
+        messages: ['Resource not found'],
         status: 400,
       }),
     );

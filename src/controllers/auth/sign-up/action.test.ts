@@ -1,7 +1,8 @@
-import { Mock } from '#/__mocks__';
-import { ValidationError } from '#/errors';
+import { Error } from '@lunaticenslaved/schema';
 
-import { signUp } from './sign-up';
+import { Mock } from '#/__mocks__';
+
+import { signUp } from './action';
 import { createUserWithLoginExistsError } from './errors';
 
 describe('test validation', () => {
@@ -15,7 +16,7 @@ describe('test validation', () => {
       Mock.context,
     );
 
-    await expect(promise).rejects.toThrow(ValidationError);
+    await expect(promise).rejects.toThrow(Error.ValidationError);
   });
 
   test('cannot sign up without login', async () => {
@@ -28,7 +29,7 @@ describe('test validation', () => {
       Mock.context,
     );
 
-    await expect(promise).rejects.toThrow(ValidationError);
+    await expect(promise).rejects.toThrow(Error.ValidationError);
   });
 });
 

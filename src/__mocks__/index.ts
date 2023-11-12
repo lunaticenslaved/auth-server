@@ -2,7 +2,7 @@ import { UploadedFile } from 'express-fileupload';
 
 import { Context } from '#/context';
 import { prisma, Storage } from '#/services';
-import { Request, signUp } from '#/controllers/auth/sign-up/sign-up';
+import { Request, signUp } from '#/controllers/auth/sign-up/action';
 
 jest.mock('./prisma');
 
