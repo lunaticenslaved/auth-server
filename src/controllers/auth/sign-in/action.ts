@@ -2,9 +2,9 @@ import bcrypt from 'bcrypt';
 
 import { Schema } from '@lunaticenslaved/schema';
 
-import { createTokens } from '#/utils';
 import { Context } from '#/context';
 import { UserDTO } from '#/dto';
+import { createTokens } from '#/utils';
 
 import { createInvalidPasswordError, createUserWithLoginNotExistsError } from './errors';
 import { SignInRequest, SignInResponse } from './types';

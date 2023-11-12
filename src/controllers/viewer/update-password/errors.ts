@@ -5,5 +5,7 @@ export function createIncorrectPasswordError() {
 }
 
 export function createSamePasswordError() {
-  return new Error.ValidationError({ messages: ['New password cannot be the same'] });
+  return new Error.ValidationError({
+    messages: ['New password cannot be the same'],
+  });
 }

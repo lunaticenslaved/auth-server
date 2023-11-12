@@ -1,11 +1,11 @@
 import { Schema } from '@lunaticenslaved/schema';
 
 import { Context } from '#/context';
-import { createHash, createTokens } from '#/utils';
 import { UserDTO } from '#/dto';
+import { createHash, createTokens } from '#/utils';
 
-import { SignUpRequest, SignUpResponse } from './types';
 import { createUserWithLoginExistsError } from './errors';
+import { SignUpRequest, SignUpResponse } from './types';
 
 const validators = {
   login: Schema.Validators.login,

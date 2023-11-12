@@ -3,7 +3,7 @@ import { Error } from '@lunaticenslaved/schema';
 import { Mock } from '#/__mocks__';
 
 import { signIn } from './action';
-import { createUserWithLoginNotExistsError, createInvalidPasswordError } from './errors';
+import { createInvalidPasswordError, createUserWithLoginNotExistsError } from './errors';
 
 describe('test validation', () => {
   test('cannot sign in without password', async () => {

@@ -2,9 +2,9 @@ import bcrypt from 'bcrypt';
 
 import { Validation, Validators } from '@lunaticenslaved/schema';
 
-import { createHash } from '#/utils';
-import { UserDTO } from '#/dto';
 import { Context } from '#/context';
+import { UserDTO } from '#/dto';
+import { createHash } from '#/utils';
 
 import { createIncorrectPasswordError, createSamePasswordError } from './errors';
 import { UpdatePasswordRequest, UpdatePasswordResponse } from './types';

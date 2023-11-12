@@ -1,4 +1,4 @@
-import { Validators, Validation } from '@lunaticenslaved/schema';
+import { Validation, Validators } from '@lunaticenslaved/schema';
 
 import { Context } from '#/context';
 import { UserDTO } from '#/dto';

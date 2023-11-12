@@ -1,8 +1,8 @@
 import { PrismaClient } from '@prisma/client';
 import { execSync } from 'child_process';
+import { randomUUID } from 'node:crypto';
 import { join } from 'path';
 import { URL } from 'url';
-import { randomUUID } from 'node:crypto';
 
 const generateDatabaseURL = (schema: string) => {
   if (!process.env.DATABASE_URL) {

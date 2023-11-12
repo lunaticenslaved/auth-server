@@ -1,8 +1,8 @@
 import { UploadedFile } from 'express-fileupload';
 
 import { Context } from '#/context';
-import { prisma, Storage } from '#/services';
 import { Request, signUp } from '#/controllers/auth/sign-up/action';
+import { Storage, prisma } from '#/services';
 
 jest.mock('./prisma');
 

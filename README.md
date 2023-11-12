@@ -27,7 +27,6 @@
 
 - add script `deploy`
 
-
 ##### Add jest
 
 - `npm i -D jest @types/jest ts-jest`

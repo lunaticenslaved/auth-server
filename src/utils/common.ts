@@ -1,4 +1,5 @@
 import { Express, Request } from 'express';
+
 import bcrypt from 'bcrypt';
 import jwt from 'jsonwebtoken';
 
@@ -29,7 +30,10 @@ export const getUserFromRequest = (request: Request<unknown, unknown, unknown, u
   const user = request.user;
 
   if (!user) {
-    throw new Error.UnauthorizedError({ messages: 'User not found', status: 403 });
+    throw new Error.UnauthorizedError({
+      messages: 'User not found',
+      status: 403,
+    });
   }
 
   return user;
