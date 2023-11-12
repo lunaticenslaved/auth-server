@@ -9,12 +9,12 @@ RUN npm ci \
     && npx prisma generate \
     && npm run build
 
-FROM node:20-slim
+FROM node:alpine
 WORKDIR /app
 COPY --from=build /app/package.json /app 
 COPY --from=build /app/schema.prisma /app 
-RUN apt-get update -y \ 
-    && apt-get install -y openssl \
+RUN apk update \ 
+    && apk add --no-cache openssl \
     && npm i --omit=dev \ 
     && npx prisma generate
 COPY --from=build /app/dist /app 
