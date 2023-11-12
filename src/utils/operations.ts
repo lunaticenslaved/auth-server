@@ -1,4 +1,4 @@
-import { Schema } from '@lunaticenslaved/schema';
+import Schema from '@lunaticenslaved/schema';
 
 import { context } from '#/context';
 

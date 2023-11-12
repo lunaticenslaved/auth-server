@@ -1,11 +1,6 @@
 import '@prisma/client';
 
-import { Schema } from '@lunaticenslaved/schema';
+import { Operation } from '@lunaticenslaved/schema';
 
-import { UserDTO } from '#/dto';
-
-export type UpdateAvatarRequest = Schema.Operation.Viewer.UpdateAvatar.Request;
-
-export type UpdateAvatarResponse = {
-  user: UserDTO.User;
-};
+export type UpdateAvatarRequest = Operation.Viewer.UpdateAvatar.Request;
+export type UpdateAvatarResponse = Operation.Viewer.UpdateAvatar.Response;
