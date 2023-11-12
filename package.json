@@ -6,12 +6,12 @@
   "scripts": {
     "build": "tsc -p tsconfig.json && tsc-alias -p tsconfig.json",
     "dev": "nodemon src/index.ts",
-    "lint": "eslint . --fix --ext ts,tsx --report-unused-disable-directives --max-warnings 0",
-    "format": "prettier . --write",
     "prisma:generate": "npx prisma generate",
     "db:migrate:dev": "npx prisma migrate dev",
     "db:migrate:prod": "npx prisma migrate deploy",
-    "test": "APP_END=unittest jest"
+    "test": "APP_ENV=unittest jest",
+    "lint": "eslint . --ext ts,tsx --max-warnings 0 && prettier .",
+    "lint:fix": "eslint . --fix --ext ts,tsx --report-unused-disable-directives --max-warnings 0 && prettier . --write"
   },
   "author": "lunaticenslved",
   "license": "ISC",
