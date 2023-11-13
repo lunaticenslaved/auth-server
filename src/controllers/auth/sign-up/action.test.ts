@@ -16,6 +16,8 @@ describe('test validation', () => {
       Mock.context,
     );
 
+    await promise.catch(error => console.log(error));
+
     await expect(promise).rejects.toThrow(Error.ValidationError);
   });
 

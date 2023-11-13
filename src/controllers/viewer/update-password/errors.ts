@@ -1,7 +1,7 @@
 import { Error } from '@lunaticenslaved/schema';
 
 export function createIncorrectPasswordError() {
-  return new Error.AuthenticationError({ messages: [`Password is incorrect`] });
+  return new Error.ValidationError({ messages: [`Password is incorrect`] });
 }
 
 export function createSamePasswordError() {
