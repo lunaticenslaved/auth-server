@@ -20,4 +20,4 @@ RUN apk update \
 COPY --from=build /app/dist /app 
 USER 1000
 EXPOSE 3000
-ENTRYPOINT ["node","index.js"]
+ENTRYPOINT ["node","app.js"]
