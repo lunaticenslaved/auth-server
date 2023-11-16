@@ -1,4 +1,4 @@
-import { User } from '@prisma/client';
+import 'express';
 
 declare global {
   namespace NodeJS {
@@ -23,6 +23,7 @@ declare global {
 
 declare module 'express' {
   export interface Request {
-    user?: Omit<User, 'password'>;
+    userId?: string;
+    sessionId?: string;
   }
 }

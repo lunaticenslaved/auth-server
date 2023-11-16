@@ -1,20 +1,14 @@
 import { createOperation } from '#/context';
+import { RequestUtils, TokensUtils } from '#/utils';
 
 import { logout as action } from './action';
 
 export const logout = createOperation(async (request, response, context) => {
-  const user = request.user;
-  const accessToken = request.cookies['accessToken'] as string;
+  const sessionId = RequestUtils.getSessionId(request);
 
-  if (!user || !accessToken) return;
+  if (!sessionId) return;
 
-  await action(
-    {
-      userId: user.id,
-      accessToken,
-    },
-    context,
-  );
+  await action({ sessionId }, context);
 
-  response.cookie('accessToken', '', { expires: new Date() });
+  TokensUtils.removeTokensFormResponse(response);
 });

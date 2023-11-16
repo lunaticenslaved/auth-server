@@ -1,7 +1,6 @@
 import { Validation, Validators } from '@lunaticenslaved/schema';
 
 import { Context } from '#/context';
-import { UserDTO } from '#/dto';
 
 import { UpdateAvatarRequest, UpdateAvatarResponse } from './types';
 
@@ -16,20 +15,14 @@ const validators = {
 };
 
 export async function updateAvatar(request: Request, context: Context): Promise<Response> {
+  const { userId, avatar } = request;
+
   await Validation.validateRequest(validators, request);
 
-  const { link } = await context.storage.avatar.uploadFile(request.avatar);
-  const user = await context.prisma.user.update({
-    where: {
-      id: request.userId,
-    },
-    data: {
-      avatars: {
-        create: { link },
-      },
-    },
-    select: UserDTO.selector,
+  const { link } = await context.storage.avatar.uploadFile(avatar);
+  const user = await context.services.user.update(userId, {
+    uploadedAvatar: link,
   });
 
-  return { user: UserDTO.prepare(user) };
+  return { user };
 }

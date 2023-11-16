@@ -3,7 +3,6 @@ import bcrypt from 'bcrypt';
 import { Validation, Validators } from '@lunaticenslaved/schema';
 
 import { Context } from '#/context';
-import { UserDTO } from '#/dto';
 import { createHash } from '#/utils';
 
 import { createIncorrectPasswordError, createSamePasswordError } from './errors';
@@ -21,43 +20,28 @@ const validators = {
 };
 
 export async function updatePassword(request: Request, context: Context): Promise<Response> {
+  const { userId } = request;
+
   await Validation.validateRequest(validators, request);
 
-  const user = await context.prisma.user.findFirst({
-    where: {
-      id: { equals: request.userId },
-    },
-    select: {
-      id: true,
-      password: true,
-    },
+  const { password: savedPassword } = await context.prisma.user.findFirstOrThrow({
+    where: { id: userId },
+    select: { password: true },
   });
-
-  if (!user) {
-    throw Error('Unknown user!');
-  }
 
   const { oldPassword, newPassword } = request;
 
-  if (!(await bcrypt.compare(oldPassword, user.password))) {
+  if (!(await bcrypt.compare(oldPassword, savedPassword))) {
     throw createIncorrectPasswordError();
   }
 
-  if (await bcrypt.compare(newPassword, user.password)) {
+  if (await bcrypt.compare(newPassword, savedPassword)) {
     throw createSamePasswordError();
   }
 
-  const updatedUser = await context.prisma.user.update({
-    where: {
-      id: user.id,
-    },
-    data: {
-      password: {
-        set: await createHash(newPassword),
-      },
-    },
-    select: UserDTO.selector,
+  const user = await context.services.user.update(userId, {
+    password: await createHash(newPassword),
   });
 
-  return { user: UserDTO.prepare(updatedUser) };
+  return { user };
 }

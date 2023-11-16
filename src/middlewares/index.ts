@@ -1,2 +1,2 @@
-export * from './add-user-from-cookie';
+export * from './add-token-data';
 export * from './check-auth';

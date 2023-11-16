@@ -1,12 +1,20 @@
 import { createOperation } from '#/context';
-import { getUserFromRequest } from '#/utils';
+import { RequestUtils } from '#/utils';
 
 import { updatePassword as action } from './action';
 
 export const updatePassword = createOperation(async (request, _, context) => {
-  const user = getUserFromRequest(request);
+  const oldPassword = request.body.oldPassword as string;
+  const newPassword = request.body.newPassword as string;
 
-  const response = await action({ userId: user.id, ...request.body }, context);
+  const response = await action(
+    {
+      userId: RequestUtils.getUserId(request, 'strict'),
+      oldPassword,
+      newPassword,
+    },
+    context,
+  );
 
   return response;
 });

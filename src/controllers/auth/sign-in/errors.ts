@@ -1,14 +1,14 @@
-import { Error } from '@lunaticenslaved/schema';
+import { Errors } from '@lunaticenslaved/schema';
 
 export function createUserWithLoginNotExistsError(login: string) {
-  return new Error.NotFoundError({
+  return new Errors.NotFoundError({
     messages: [`User with the login '${login}' not found`],
     status: 404,
   });
 }
 
 export function createInvalidPasswordError() {
-  return new Error.ValidationError({
+  return new Errors.ValidationError({
     messages: [`Invalid login or password`],
   });
 }

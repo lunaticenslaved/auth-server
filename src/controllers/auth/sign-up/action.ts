@@ -1,23 +1,26 @@
 import Schema from '@lunaticenslaved/schema';
 
 import { Context } from '#/context';
-import { UserDTO } from '#/dto';
-import { createHash, createTokens } from '#/utils';
+import { User } from '#/dto';
+import { TokensUtils, createHash } from '#/utils';
 
 import { createUserWithLoginExistsError } from './errors';
-import { SignUpRequest, SignUpResponse } from './types';
 
 const validators = {
   login: Schema.Validators.login,
   password: Schema.Validators.newPassword,
 };
 
-export type Request = SignUpRequest & {
+export type Request = {
+  login: string;
+  password: string;
   userAgent: string;
 };
 
-export type Response = SignUpResponse & {
+export type Response = {
+  user: User;
   accessToken: string;
+  refreshToken: string;
 };
 
 export async function signUp(data: Request, context: Context): Promise<Response> {
@@ -32,26 +35,19 @@ export async function signUp(data: Request, context: Context): Promise<Response>
   }
 
   const hashedPassword = await createHash(data.password);
-  const createdUser = await context.prisma.user.create({
-    data: {
-      login: data.login,
-      password: hashedPassword,
-    },
-    select: UserDTO.selector,
+  const createdUser = await context.services.user.create({
+    login: data.login,
+    password: hashedPassword,
+  });
+  const session = await context.services.session.save({
+    userAgent: data.userAgent,
+    userId: createdUser.id,
   });
 
-  const { refreshToken, accessToken } = createTokens();
-  await context.prisma.session.create({
-    data: {
-      user: { connect: { id: createdUser.id } },
-      userAgent: data.userAgent,
-      refreshToken,
-      accessToken,
-    },
+  const tokens = TokensUtils.createTokens({
+    userId: createdUser.id,
+    sessionId: session.id,
   });
 
-  return {
-    accessToken,
-    user: UserDTO.prepare(createdUser),
-  };
+  return { ...tokens, user: createdUser };
 }

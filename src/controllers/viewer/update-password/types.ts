@@ -1,4 +1,4 @@
-import { UserDTO } from '#/dto';
+import { User } from '#/dto';
 
 export type UpdatePasswordRequest = {
   oldPassword: string;
@@ -6,5 +6,5 @@ export type UpdatePasswordRequest = {
 };
 
 export type UpdatePasswordResponse = {
-  user: UserDTO.User;
+  user: User;
 };

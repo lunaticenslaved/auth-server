@@ -1,4 +1,4 @@
-import { Error } from '@lunaticenslaved/schema';
+import { Errors } from '@lunaticenslaved/schema';
 
 import { Mock } from '#/__mocks__';
 
@@ -16,7 +16,7 @@ describe('test validation', () => {
       Mock.context,
     );
 
-    await expect(promise).rejects.toThrow(Error.ValidationError);
+    await expect(promise).rejects.toThrow(Errors.ValidationError);
   });
 
   test('cannot sign in without login', async () => {
@@ -29,7 +29,7 @@ describe('test validation', () => {
       Mock.context,
     );
 
-    await expect(promise).rejects.toThrow(Error.ValidationError);
+    await expect(promise).rejects.toThrow(Errors.ValidationError);
   });
 });
 

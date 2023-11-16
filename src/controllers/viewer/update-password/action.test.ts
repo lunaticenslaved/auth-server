@@ -1,4 +1,4 @@
-import { Error } from '@lunaticenslaved/schema';
+import { Errors } from '@lunaticenslaved/schema';
 
 import { Mock } from '#/__mocks__';
 
@@ -23,7 +23,7 @@ describe('validation works', () => {
       Mock.context,
     );
 
-    await expect(promise).rejects.toThrow(Error.ValidationError);
+    await expect(promise).rejects.toThrow(Errors.ValidationError);
   });
 
   test('newPassword is not valid', async () => {
@@ -37,7 +37,7 @@ describe('validation works', () => {
       Mock.context,
     );
 
-    await expect(promise).rejects.toThrow(Error.ValidationError);
+    await expect(promise).rejects.toThrow(Errors.ValidationError);
   });
 });
 

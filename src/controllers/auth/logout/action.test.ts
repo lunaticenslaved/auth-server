@@ -1,4 +1,5 @@
 import { Mock } from '#/__mocks__';
+import { TokensUtils } from '#/utils';
 
 import { logout } from './action';
 
@@ -9,22 +10,22 @@ test('session was deleted', async () => {
     password: 'password',
   };
 
-  const { user, accessToken } = await Mock.utils.createUser(data);
+  const { accessToken } = await Mock.utils.createUser(data);
+  const { sessionId } = TokensUtils.getTokenData({ accessToken }, 'strict');
 
   async function getSession() {
     return (
       (await Mock.context.prisma.session.findFirst({
-        where: {
-          userId: { equals: user.id },
-          accessToken: { equals: accessToken },
-        },
+        where: { id: sessionId },
       })) || undefined
     );
   }
 
-  expect(await getSession()).toBeDefined();
+  const session = await getSession();
 
-  await logout({ accessToken, userId: user.id }, Mock.context);
+  expect(session).toBeDefined();
+
+  await logout({ sessionId: session!.id }, Mock.context);
 
   expect(await getSession()).toBeUndefined();
 });

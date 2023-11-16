@@ -3,71 +3,51 @@ import bcrypt from 'bcrypt';
 import { Operation, Validation } from '@lunaticenslaved/schema';
 
 import { Context } from '#/context';
-import { UserDTO } from '#/dto';
-import { createTokens } from '#/utils';
+import { User } from '#/dto';
+import { TokensUtils } from '#/utils';
 
 import { createInvalidPasswordError, createUserWithLoginNotExistsError } from './errors';
-import { SignInRequest, SignInResponse } from './types';
 
-type Request = SignInRequest & {
+type Request = {
+  login: string;
+  password: string;
   userAgent: string;
+  sessionId?: string;
 };
 
-type Response = SignInResponse & {
+type Response = {
+  user: User;
   accessToken: string;
+  refreshToken: string;
 };
 
 export const signIn = async (request: Request, context: Context): Promise<Response> => {
+  const { sessionId, userAgent } = request;
+
+  if (sessionId) {
+    await context.prisma.session.deleteMany({
+      where: { id: sessionId },
+    });
+  }
+
   await Validation.validateRequest(Operation.Auth.SignIn.validators, request);
 
-  const user = await context.prisma.user.findFirst({
-    where: { login: { equals: request.login } },
-    select: { ...UserDTO.selector, password: true },
+  const user = await context.services.user.get({ login: request.login });
+  const { password: savedPassword } = await context.prisma.user.findFirstOrThrow({
+    where: { id: user.id },
+    select: { password: true },
   });
 
   if (!user) {
     throw createUserWithLoginNotExistsError(request.login);
   }
 
-  const { password: savedPassword, ...savedUser } = user;
-
   if (!(await bcrypt.compare(request.password, savedPassword))) {
     throw createInvalidPasswordError();
   }
 
-  const { refreshToken, accessToken } = createTokens();
+  const session = await context.services.session.save({ userAgent, userId: user.id });
+  const tokens = TokensUtils.createTokens({ userId: user.id, sessionId: session.id });
 
-  // find a session for user and agent
-  const session = await context.prisma.session.findFirst({
-    where: {
-      userAgent: { equals: request.userAgent },
-      userId: { equals: user.id },
-    },
-  });
-
-  if (session) {
-    // update session with new tokens
-    await context.prisma.session.update({
-      where: { id: session.id },
-      data: {
-        accessToken: { set: accessToken },
-        refreshToken: { set: refreshToken },
-      },
-    });
-  } else {
-    // save new session
-    await context.prisma.session.create({
-      data: {
-        user: { connect: { id: user.id } },
-        userAgent: request.userAgent,
-        accessToken,
-        refreshToken,
-      },
-    });
-  }
-
-  return {
-    accessToken,
-    user: UserDTO.prepare(savedUser),
-  };
+  return { ...tokens, user };
 };

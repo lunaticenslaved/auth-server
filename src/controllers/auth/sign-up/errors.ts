@@ -1,7 +1,7 @@
-import { Error } from '@lunaticenslaved/schema';
+import { Errors } from '@lunaticenslaved/schema';
 
 export function createUserWithLoginExistsError(login: string) {
-  return new Error.ConflictError({
+  return new Errors.ConflictError({
     messages: [`User with the login '${login}' already exists`],
     status: 403,
   });

@@ -1,19 +1,25 @@
-import { Error } from '@lunaticenslaved/schema';
-
 import { createOperation } from '#/context';
+import { RequestUtils, TokensUtils } from '#/utils';
 
 import { signIn as action } from './action';
 
-export const signIn = createOperation(async ({ body, headers }, res, context) => {
-  const userAgent = headers['user-agent'];
+export const signIn = createOperation(async (req, res, context) => {
+  const login = req.body.login as string;
+  const password = req.body.password as string;
+  const userAgent = RequestUtils.getUserAgent(req);
+  const sessionId = RequestUtils.getSessionId(req);
 
-  if (!userAgent) {
-    throw new Error.ValidationError({ messages: [`Unknown user agent`] });
-  }
+  const { user, ...tokens } = await action(
+    {
+      login,
+      password,
+      userAgent,
+      sessionId,
+    },
+    context,
+  );
 
-  const { accessToken, user } = await action({ ...body, userAgent }, context);
-
-  res.cookie('accessToken', accessToken);
+  TokensUtils.setTokensToResponse(tokens, res);
 
   return { user };
 });

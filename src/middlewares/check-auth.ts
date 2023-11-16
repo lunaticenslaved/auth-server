@@ -1,13 +1,14 @@
 import { NextFunction, Request, Response } from 'express';
 
-import { Error } from '@lunaticenslaved/schema';
+import { Errors } from '@lunaticenslaved/schema';
+
+import { RequestUtils } from '#/utils';
 
 export async function checkAuth(request: Request, _: Response, next: NextFunction) {
-  if (!request.user) {
-    throw new Error.NotFoundError({
-      messages: ['User not found'],
-      status: 404,
-    });
+  const sessionId = RequestUtils.getSessionId(request);
+
+  if (!sessionId) {
+    throw new Errors.UnauthorizedError({ messages: 'The session is expired', status: 403 });
   }
 
   next();

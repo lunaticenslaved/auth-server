@@ -1,7 +1,7 @@
 import { Validation, Validators } from '@lunaticenslaved/schema';
 
 import { Context } from '#/context';
-import { UserDTO } from '#/dto';
+import { User } from '#/dto/user';
 
 type Request = {
   userId: string;
@@ -9,7 +9,7 @@ type Request = {
 };
 
 type Response = {
-  user: UserDTO.User;
+  user: User;
 };
 
 const validators = {
@@ -17,17 +17,10 @@ const validators = {
 };
 
 export async function updateInfo(request: Request, context: Context): Promise<Response> {
+  const { userId, login } = request;
   await Validation.validateRequest(validators, request);
 
-  const user = await context.prisma.user.update({
-    where: {
-      id: request.userId,
-    },
-    data: {
-      login: { set: request.login },
-    },
-    select: UserDTO.selector,
-  });
+  const user = await context.services.user.update(userId, { login });
 
-  return { user: UserDTO.prepare(user) };
+  return { user };
 }

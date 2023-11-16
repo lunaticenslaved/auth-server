@@ -1,12 +1,21 @@
 import { createOperation } from '#/context';
-import { getUserFromRequest } from '#/utils';
+import { User } from '#/dto';
+import { RequestUtils } from '#/utils';
 
 import { updateInfo as action } from './action';
+
+export type UpdateInfoRequest = {
+  login: string;
+};
+
+export type UpdateInfoResponse = {
+  user: User;
+};
 
 export const updateInfo = createOperation(async (request, _, context) => {
   const { user } = await action(
     {
-      userId: getUserFromRequest(request).id,
+      userId: RequestUtils.getUserId(request, 'strict'),
       login: request.body.login,
     },
     context,

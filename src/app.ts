@@ -5,12 +5,12 @@ import bodyParser from 'body-parser';
 import cookieParser from 'cookie-parser';
 import cors from 'cors';
 
+import { context } from '#/context';
 import { addRouter } from '#/controllers';
-import { prisma } from '#/services/prisma';
 import { Constants } from '#/utils';
 
 export async function createApp() {
-  await prisma.$connect();
+  await context.prisma.$connect();
 
   const app = express();
 
