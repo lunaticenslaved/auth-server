@@ -35,8 +35,7 @@ export function getTokens<T extends 'strict'>(req: Request, type?: T): Partial<T
   return { accessToken, refreshToken };
 }
 
-export function setTokensToResponse(tokens: Tokens, res: Response) {
-  res.setHeader('authorization', `Bearer ${tokens.accessToken}`);
+export function setTokensToResponse(tokens: Pick<Tokens, 'refreshToken'>, res: Response) {
   res.cookie('refreshToken', tokens.refreshToken);
 }
 

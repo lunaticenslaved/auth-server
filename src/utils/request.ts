@@ -23,7 +23,10 @@ export function getSessionId<T extends 'strict' | undefined>(
   type?: T,
 ): string | undefined {
   const { accessToken } = getTokens(req, type);
-  const { sessionId } = getTokenData({ accessToken }, 'strict');
+
+  if (!accessToken) return undefined;
+
+  const { sessionId } = getTokenData({ accessToken }, type);
 
   return sessionId;
 }
