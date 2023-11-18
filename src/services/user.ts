@@ -7,6 +7,7 @@ const select = {
   id: true,
   login: true,
   email: true,
+  isActivated: true,
   avatars: {
     select: {
       id: true,
@@ -46,6 +47,7 @@ type NotPreparedUser = {
   id: string;
   login: string;
   email: string;
+  isActivated: boolean;
   avatars: AvatarNotPrepared[];
 };
 
@@ -54,6 +56,7 @@ function prepare(user: NotPreparedUser): User {
     id: user.id,
     login: user.login,
     email: user.email,
+    isActivated: user.isActivated,
     avatar: user.avatars.find(({ isCurrent }) => !!isCurrent) || null,
   };
 }
