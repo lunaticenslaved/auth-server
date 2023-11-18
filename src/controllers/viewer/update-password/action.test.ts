@@ -7,6 +7,7 @@ import { createIncorrectPasswordError, createSamePasswordError } from './errors'
 
 const data = {
   userAgent: 'chrome',
+  email: 'test@test.ru',
   login: 'login',
   password: 'password',
 };

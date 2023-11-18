@@ -50,6 +50,7 @@ test('cannot sign in because of invalid password', async () => {
   const data = {
     userAgent: 'chrome',
     login: 'login',
+    email: 'test@test.ru',
     password: 'password',
   };
 

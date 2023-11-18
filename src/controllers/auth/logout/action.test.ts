@@ -6,6 +6,7 @@ import { logout } from './action';
 test('session was deleted', async () => {
   const data = {
     userAgent: 'chrome',
+    email: 'test@test.ru',
     login: 'login',
     password: 'password',
   };

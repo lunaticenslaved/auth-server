@@ -11,6 +11,7 @@ describe('test validation', () => {
       {
         userAgent: 'chrome',
         login: 'user',
+        email: 'test@test.ru',
         password: '',
       },
       Mock.context,
@@ -23,6 +24,7 @@ describe('test validation', () => {
     const promise = signUp(
       {
         userAgent: 'chrome',
+        email: 'test@test.ru',
         login: '',
         password: 'user',
       },
@@ -37,6 +39,7 @@ test('can sign up', async () => {
   const { user } = await signUp(
     {
       userAgent: 'chrome',
+      email: 'test@test.ru',
       login: 'login',
       password: 'password',
     },
@@ -49,6 +52,7 @@ test('can sign up', async () => {
 test('cannot sign up with the same login', async () => {
   const data = {
     userAgent: 'chrome',
+    email: 'test@test.ru',
     login: 'login',
     password: 'password',
   };

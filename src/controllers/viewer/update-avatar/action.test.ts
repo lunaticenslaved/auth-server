@@ -6,6 +6,7 @@ import { updateAvatar } from './action';
 
 test('can upload file', async () => {
   const { user } = await Mock.utils.createUser({
+    email: 'test@test.ru',
     login: 'login',
     password: 'password',
     userAgent: 'chrome',

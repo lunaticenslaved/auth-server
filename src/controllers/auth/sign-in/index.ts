@@ -21,5 +21,5 @@ export const signIn = createOperation(async (req, res, context) => {
 
   TokensUtils.setTokensToResponse(tokens, res);
 
-  return { user, accessToken: tokens.accessToken };
+  return { user, token: tokens.accessToken };
 });

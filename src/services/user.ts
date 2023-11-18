@@ -6,6 +6,7 @@ import { User } from '#/dto/user';
 const select = {
   id: true,
   login: true,
+  email: true,
   avatars: {
     select: {
       id: true,
@@ -17,6 +18,7 @@ const select = {
 
 type CreateUserRequest = {
   login: string;
+  email: string;
   password: string;
 };
 
@@ -43,6 +45,7 @@ type AvatarNotPrepared = {
 type NotPreparedUser = {
   id: string;
   login: string;
+  email: string;
   avatars: AvatarNotPrepared[];
 };
 
@@ -50,10 +53,14 @@ function prepare(user: NotPreparedUser): User {
   return {
     id: user.id,
     login: user.login,
+    email: user.email,
     avatar: user.avatars.find(({ isCurrent }) => !!isCurrent) || null,
   };
 }
 
+export function createUserNotFoundError() {
+  return new Errors.UnauthorizedError({ messages: 'User not found' });
+}
 export class UserService {
   private context: Context;
 
@@ -66,6 +73,7 @@ export class UserService {
       select,
       data: {
         login: data.login,
+        email: data.email,
         password: data.password,
       },
     });
@@ -89,7 +97,11 @@ export class UserService {
     return prepare(user);
   }
 
-  async get(props: GetUserRequest): Promise<User> {
+  async get<T extends 'strict'>(
+    props: GetUserRequest,
+    type?: T,
+  ): Promise<T extends 'strict' ? User : User | undefined>;
+  async get<T extends 'strict'>(props: GetUserRequest, type?: T): Promise<User | undefined> {
     const user = await this.context.prisma.user.findFirst({
       where:
         'login' in props
@@ -102,13 +114,32 @@ export class UserService {
       select,
     });
 
-    if (!user) {
-      throw new Errors.UnauthorizedError({
-        messages: 'User not found',
-        status: 403,
-      });
+    if (!user && type === 'strict') {
+      throw createUserNotFoundError();
     }
 
-    return prepare(user);
+    return user ? prepare(user) : undefined;
+  }
+
+  async getPassword(props: GetUserRequest): Promise<string> {
+    const user = await this.context.prisma.user.findFirst({
+      where:
+        'login' in props
+          ? {
+              login: props.login,
+            }
+          : {
+              id: props.userId,
+            },
+      select: {
+        password: true,
+      },
+    });
+
+    if (!user) {
+      throw createUserNotFoundError();
+    }
+
+    return user.password;
   }
 }

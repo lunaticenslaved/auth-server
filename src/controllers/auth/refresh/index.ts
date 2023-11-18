@@ -23,5 +23,5 @@ export const refresh = createOperation<Response>(async (req, res, context) => {
 
   TokensUtils.setTokensToResponse(tokens, res);
 
-  return { user, accessToken: tokens.accessToken };
+  return { user, token: tokens.accessToken };
 });

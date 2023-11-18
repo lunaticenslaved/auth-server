@@ -25,19 +25,15 @@ export const signIn = async (request: Request, context: Context): Promise<Respon
   const { sessionId, userAgent } = request;
 
   if (sessionId) {
-    await context.prisma.session.deleteMany({
-      where: { id: sessionId },
-    });
+    await context.services.session.delete({ sessionId });
   }
 
   await Validation.validateRequest(Operation.Auth.SignIn.validators, request);
 
-  const user = await context.services.user.get({ login: request.login });
-  const { password: savedPassword } = await context.prisma.user.findFirstOrThrow({
-    where: { id: user.id },
-    select: { password: true },
-  });
+  const user = await context.services.user.get({ login: request.login }, 'strict');
+  const savedPassword = await context.services.user.getPassword({ userId: user.id });
 
+  // TODO move errors to all
   if (!user) {
     throw createUserWithLoginNotExistsError(request.login);
   }

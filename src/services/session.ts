@@ -8,6 +8,14 @@ type SaveSessionRequest = {
   sessionId?: string;
 };
 
+type DeleteSessionRequest = {
+  sessionId: string;
+};
+
+type GetSessionRequest = {
+  sessionId: string;
+};
+
 export class SessionService {
   private context: Context;
 
@@ -30,5 +38,18 @@ export class SessionService {
     });
 
     return session;
+  }
+
+  async delete({ sessionId }: DeleteSessionRequest) {
+    return await this.context.prisma.session.delete({
+      where: { id: sessionId },
+    });
+  }
+
+  // TODO add strict
+  async get({ sessionId }: GetSessionRequest) {
+    return await this.context.prisma.session.findFirst({
+      where: { id: sessionId },
+    });
   }
 }

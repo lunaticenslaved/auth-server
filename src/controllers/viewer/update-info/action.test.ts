@@ -6,6 +6,7 @@ import { updateInfo } from './action';
 
 test('login is required', async () => {
   const { user } = await Mock.utils.createUser({
+    email: 'test@test.ru',
     userAgent: 'chrome',
     login: 'login',
     password: 'password',
@@ -24,6 +25,7 @@ test('login is required', async () => {
 
 test('can change login', async () => {
   const { user } = await Mock.utils.createUser({
+    email: 'test@test.ru',
     userAgent: 'chrome',
     login: 'login',
     password: 'password',

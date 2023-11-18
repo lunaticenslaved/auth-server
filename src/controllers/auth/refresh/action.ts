@@ -1,8 +1,7 @@
 import { Context } from '#/context';
 import { User } from '#/dto/user';
+import { createUserNotFoundError } from '#/services/user';
 import { TokensUtils } from '#/utils';
-
-import { createUserNotFoundError } from './errors';
 
 type Request = {
   userId: string;
@@ -19,19 +18,13 @@ type Response = {
 export const refresh = async (data: Request, context: Context): Promise<Response> => {
   const { sessionId, userId } = data;
 
-  const sessionFromDb = await context.prisma.session.findFirst({
-    where: { id: sessionId },
-  });
+  const sessionFromDb = await context.services.session.get({ sessionId });
 
   if (!sessionFromDb) {
     throw createUserNotFoundError();
   }
 
-  const user = await context.services.user.get({ userId });
-
-  if (!user) {
-    throw createUserNotFoundError();
-  }
+  const user = await context.services.user.get({ userId }, 'strict');
 
   const tokens = TokensUtils.createTokens({
     userId: user.id,

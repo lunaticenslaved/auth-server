@@ -5,7 +5,5 @@ type Request = {
 };
 
 export async function logout({ sessionId }: Request, context: Context) {
-  await context.prisma.session.deleteMany({
-    where: { id: sessionId },
-  });
+  await context.services.session.delete({ sessionId });
 }
