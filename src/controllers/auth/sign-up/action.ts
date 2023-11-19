@@ -22,9 +22,7 @@ export type Response = {
 export async function signUp(data: Request, context: Context): Promise<Response> {
   await Validation.validateRequest(Operation.Auth.SignUp.validators, data);
 
-  const user = await context.prisma.user.findFirst({
-    where: { login: { equals: data.login } },
-  });
+  const user = await context.services.user.get({ login: data.login });
 
   if (user) {
     throw createUserWithLoginExistsError(data.login);

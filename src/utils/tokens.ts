@@ -20,11 +20,10 @@ export function removeTokensFormResponse(res: Response) {
   res.clearCookie('refreshToken');
 }
 
-export function getTokens<T extends 'strict'>(
-  req: Request,
-  type?: T,
-): T extends 'strict' ? Tokens : Partial<Tokens>;
-export function getTokens<T extends 'strict'>(req: Request, type?: T): Partial<Tokens> | Tokens {
+export function getTokens(req: Request): Partial<Tokens>;
+export function getTokens(req: Request, type: 'strict'): Tokens;
+export function getTokens(req: Request, type?: 'strict'): Partial<Tokens> | Tokens;
+export function getTokens(req: Request, type?: 'strict' | undefined): Partial<Tokens> | Tokens {
   const accessToken = req.headers['authorization']?.split(' ')[1];
   const refreshToken = req.cookies['refreshToken'] as string | undefined;
 
@@ -58,21 +57,23 @@ type TokenDataRequest =
       accessToken: string;
     };
 
-export function getTokenData<T extends 'strict'>(
+export function getTokenData(prop: TokenDataRequest): TokenData | Partial<TokenData>;
+export function getTokenData(prop: TokenDataRequest, type: 'strict'): TokenData;
+export function getTokenData(
   prop: TokenDataRequest,
-  type?: T,
-): T extends 'strict' ? TokenData : TokenData | undefined;
-export function getTokenData<T extends 'strict'>(
+  type?: 'strict',
+): TokenData | Partial<TokenData>;
+export function getTokenData(
   prop: TokenDataRequest,
-  type?: T,
-): TokenData | undefined {
+  type?: 'strict',
+): TokenData | Partial<TokenData> {
   if ('refreshToken' in prop) {
     try {
       return jwt.verify(prop.refreshToken, Constants.REFRESH_TOKEN_SECRET as string) as TokenData;
     } catch (error) {
       if (type === 'strict') throw error;
 
-      return undefined;
+      return {};
     }
   } else {
     try {
@@ -80,7 +81,7 @@ export function getTokenData<T extends 'strict'>(
     } catch (error) {
       if (type === 'strict') throw error;
 
-      return undefined;
+      return {};
     }
   }
 }

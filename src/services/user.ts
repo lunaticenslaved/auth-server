@@ -100,11 +100,9 @@ export class UserService {
     return prepare(user);
   }
 
-  async get<T extends 'strict'>(
-    props: GetUserRequest,
-    type?: T,
-  ): Promise<T extends 'strict' ? User : User | undefined>;
-  async get<T extends 'strict'>(props: GetUserRequest, type?: T): Promise<User | undefined> {
+  async get(props: GetUserRequest, type: 'strict'): Promise<User>;
+  async get(props: GetUserRequest): Promise<User | undefined>;
+  async get(props: GetUserRequest, type?: 'strict'): Promise<User | undefined> {
     const user = await this.context.prisma.user.findFirst({
       where:
         'login' in props

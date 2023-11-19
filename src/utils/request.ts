@@ -14,14 +14,9 @@ export function getUserAgent({ headers }: Request) {
   return userAgent;
 }
 
-export function getSessionId<T extends 'strict' | undefined>(
-  req: Request,
-  type?: T,
-): T extends undefined ? string | undefined : string;
-export function getSessionId<T extends 'strict' | undefined>(
-  req: Request,
-  type?: T,
-): string | undefined {
+export function getSessionId(req: Request): string | undefined;
+export function getSessionId(req: Request, type: 'strict'): string;
+export function getSessionId(req: Request, type?: 'strict'): string | undefined {
   const { accessToken } = getTokens(req, type);
 
   if (!accessToken) return undefined;
@@ -31,15 +26,12 @@ export function getSessionId<T extends 'strict' | undefined>(
   return sessionId;
 }
 
-export function getUserId<T extends 'strict' | undefined>(
-  req: Request,
-  type?: T,
-): T extends undefined ? string | undefined : string;
-export function getUserId<T extends 'strict' | undefined>(
-  req: Request,
-  type?: T,
-): string | undefined {
+export function getUserId(req: Request): string | undefined;
+export function getUserId(req: Request, type: 'strict'): string;
+export function getUserId(req: Request, type?: 'strict'): string | undefined {
   const { accessToken } = getTokens(req, type);
+
+  if (!accessToken) return undefined;
 
   const { userId } = getTokenData({ accessToken }, 'strict');
 
