@@ -14,8 +14,8 @@
     "skipLibCheck": true,
 
     /* Bundler mode */
-    "module": "NodeNext",
     "types": ["node", "jest"],
+    "module": "NodeNext",
     "moduleResolution": "NodeNext",
 
     /* Paths */
