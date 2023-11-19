@@ -22,7 +22,7 @@ const validators = {
 export async function updatePassword(request: Request, context: Context): Promise<Response> {
   const { userId } = request;
 
-  await Validation.validateRequest(validators, request);
+  await Validation.validate(validators, request);
 
   const { password: savedPassword } = await context.prisma.user.findFirstOrThrow({
     where: { id: userId },

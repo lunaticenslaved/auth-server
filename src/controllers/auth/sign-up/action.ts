@@ -20,7 +20,7 @@ export type Response = {
 };
 
 export async function signUp(data: Request, context: Context): Promise<Response> {
-  await Validation.validateRequest(Operation.Auth.SignUp.validators, data);
+  await Validation.validate(Operation.Auth.SignUp.validators, data);
 
   const user = await context.services.user.get({ login: data.login });
 

@@ -28,7 +28,7 @@ export const signIn = async (request: Request, context: Context): Promise<Respon
     await context.services.session.delete({ sessionId });
   }
 
-  await Validation.validateRequest(Operation.Auth.SignIn.validators, request);
+  await Validation.validate(Operation.Auth.SignIn.validators, request);
 
   const user = await context.services.user.get({ login: request.login }, 'strict');
   const savedPassword = await context.services.user.getPassword({ userId: user.id });

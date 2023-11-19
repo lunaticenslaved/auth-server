@@ -18,7 +18,7 @@ const validators = {
 
 export async function updateInfo(request: Request, context: Context): Promise<Response> {
   const { userId, login } = request;
-  await Validation.validateRequest(validators, request);
+  await Validation.validate(validators, request);
 
   const user = await context.services.user.update(userId, { login });
 

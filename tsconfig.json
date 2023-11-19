@@ -1,5 +1,5 @@
 {
-  "extends": "./node_modules/@lunaticenslaved/schema/tsconfig.json",
+  "extends": "./node_modules/@lunaticenslaved/schema/tsconfig.base.json",
   "ts-node": {
     "require": ["tsconfig-paths/register"],
     "files": true
@@ -12,20 +12,11 @@
     "target": "ESNext",
     "lib": ["ESNext"],
     "skipLibCheck": true,
-    "composite": false,
-    "declaration": false,
-    "declarationMap": false,
 
     /* Bundler mode */
-    "useDefineForClassFields": false,
-    "esModuleInterop": true,
     "module": "NodeNext",
     "types": ["node", "jest"],
     "moduleResolution": "NodeNext",
-    "allowSyntheticDefaultImports": true,
-    "resolveJsonModule": true,
-    "isolatedModules": true,
-    "emitDecoratorMetadata": true,
 
     /* Paths */
     "outDir": "./dist",
