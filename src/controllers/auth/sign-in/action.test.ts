@@ -6,7 +6,7 @@ import { signIn } from './action';
 import { createInvalidPasswordError, createUserWithLoginNotExistsError } from './errors';
 
 describe('test validation', () => {
-  test('cannot sign in without password', async () => {
+  test('require password', async () => {
     const promise = signIn(
       {
         userAgent: 'chrome',
@@ -19,7 +19,7 @@ describe('test validation', () => {
     await expect(promise).rejects.toThrow(Errors.ValidationError);
   });
 
-  test('cannot sign in without login', async () => {
+  test('require login', async () => {
     const promise = signIn(
       {
         userAgent: 'chrome',
@@ -33,7 +33,7 @@ describe('test validation', () => {
   });
 });
 
-test('cannot sign in when user not exits', async () => {
+test('user should exit', async () => {
   const promise = signIn(
     {
       userAgent: 'chrome',
@@ -46,7 +46,7 @@ test('cannot sign in when user not exits', async () => {
   await expect(promise).rejects.toThrow(createUserWithLoginNotExistsError('login'));
 });
 
-test('cannot sign in because of invalid password', async () => {
+test('check invalid password', async () => {
   const data = {
     userAgent: 'chrome',
     login: 'login',

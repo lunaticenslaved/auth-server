@@ -1,6 +1,6 @@
 import { Request, Response } from 'express';
 
-import jwt from 'jsonwebtoken';
+import jwt, { TokenExpiredError } from 'jsonwebtoken';
 
 import { Errors } from '@lunaticenslaved/schema';
 
@@ -28,7 +28,7 @@ export function getTokens(req: Request, type?: 'strict' | undefined): Partial<To
   const refreshToken = req.cookies['refreshToken'] as string | undefined;
 
   if ((!accessToken || !refreshToken) && type === 'strict') {
-    throw new Errors.UnauthorizedError({ messages: 'Tokens are not valid' });
+    throw new Errors.TokenInvalidError({ messages: 'Tokens are not valid' });
   }
 
   return { accessToken, refreshToken };
@@ -91,13 +91,21 @@ export function checkIfTokenExpired(req: TokenDataRequest): void {
     try {
       jwt.verify(req.accessToken, Constants.ACCESS_TOKEN_SECRET as string);
     } catch (error) {
-      throw new Errors.UnauthorizedError({ messages: 'Token expired' });
+      if (error instanceof TokenExpiredError) {
+        throw new Errors.TokenExpiredError({ messages: 'Expired token' });
+      }
+
+      throw new Errors.TokenInvalidError({ messages: 'Invalid token' });
     }
   } else {
     try {
       jwt.verify(req.refreshToken, Constants.REFRESH_TOKEN_SECRET as string);
     } catch (error) {
-      throw new Errors.UnauthorizedError({ messages: 'Token expired' });
+      if (error instanceof TokenExpiredError) {
+        throw new Errors.TokenExpiredError({ messages: 'Expired token' });
+      }
+
+      throw new Errors.TokenInvalidError({ messages: 'Invalid token' });
     }
   }
 }

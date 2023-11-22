@@ -4,7 +4,7 @@ import { Context } from '#/context';
 import { User } from '#/dto';
 import { TokensUtils, createHash } from '#/utils';
 
-import { createUserWithLoginExistsError } from './errors';
+import { createUserWithEmailExistsError, createUserWithLoginExistsError } from './errors';
 
 export type Request = {
   login: string;
@@ -22,10 +22,15 @@ export type Response = {
 export async function signUp(data: Request, context: Context): Promise<Response> {
   await Validation.validate(Operation.Auth.SignUp.validators, data);
 
-  const user = await context.services.user.get({ login: data.login });
+  const userWithLogin = await context.services.user.get({ login: data.login });
+  const userWithEmail = await context.services.user.get({ email: data.email });
 
-  if (user) {
+  if (userWithLogin) {
     throw createUserWithLoginExistsError(data.login);
+  }
+
+  if (userWithEmail) {
+    throw createUserWithEmailExistsError(data.email);
   }
 
   const hashedPassword = await createHash(data.password);

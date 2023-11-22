@@ -1,8 +1,7 @@
 import { PrismaClient } from '@prisma/client';
 
-import Schema from '@lunaticenslaved/schema';
-
 import { SessionService, Storage, UserService, storage } from '#/services';
+import { createOperationWithContext } from '#/utils/operation';
 
 const prisma = new PrismaClient();
 
@@ -31,4 +30,4 @@ export class Context {
 
 export const context = new Context({ storage, prisma });
 
-export const createOperation = Schema.Operation.createOperationWithContext(context);
+export const createOperation = createOperationWithContext(context);

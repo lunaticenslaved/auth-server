@@ -19,7 +19,21 @@ export async function createApp() {
 
   app.use(fileUpload());
   app.use(cookieParser());
-  app.use(cors());
+
+  const whitelist = ['http://localhost:3000'];
+  app.use(
+    cors({
+      credentials: true,
+      origin: function (origin, callback) {
+        if (origin && whitelist.includes(origin)) {
+          callback(null, true);
+        } else {
+          console.log('origin:', origin, 'not allowed');
+          callback(new Error('Not allowed by CORS'));
+        }
+      },
+    }),
+  );
   app.use(bodyParser.json());
   app.use(bodyParser.urlencoded({ extended: false }));
 

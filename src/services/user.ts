@@ -29,6 +29,9 @@ type GetUserRequest =
     }
   | {
       login: string;
+    }
+  | {
+      email: string;
     };
 
 type UpdateRequest = {
@@ -104,14 +107,11 @@ export class UserService {
   async get(props: GetUserRequest): Promise<User | undefined>;
   async get(props: GetUserRequest, type?: 'strict'): Promise<User | undefined> {
     const user = await this.context.prisma.user.findFirst({
-      where:
-        'login' in props
-          ? {
-              login: props.login,
-            }
-          : {
-              id: props.userId,
-            },
+      where: {
+        ...('login' in props ? { login: props.login } : {}),
+        ...('email' in props ? { email: props.email } : {}),
+        ...('userId' in props ? { id: props.userId } : {}),
+      },
       select,
     });
 
@@ -124,14 +124,11 @@ export class UserService {
 
   async getPassword(props: GetUserRequest): Promise<string> {
     const user = await this.context.prisma.user.findFirst({
-      where:
-        'login' in props
-          ? {
-              login: props.login,
-            }
-          : {
-              id: props.userId,
-            },
+      where: {
+        ...('login' in props ? { login: props.login } : {}),
+        ...('email' in props ? { email: props.email } : {}),
+        ...('userId' in props ? { id: props.userId } : {}),
+      },
       select: {
         password: true,
       },
