@@ -1,6 +1,4 @@
-import { Session } from '@prisma/client';
-
-import { Context } from '#/context';
+import { PrismaClient, Session } from '@prisma/client';
 
 type SaveSessionRequest = {
   userId: string;
@@ -17,16 +15,16 @@ type GetSessionRequest = {
 };
 
 export class SessionService {
-  private context: Context;
+  private prisma: PrismaClient;
 
-  constructor(context: Context) {
-    this.context = context;
+  constructor(prisma: PrismaClient) {
+    this.prisma = prisma;
   }
 
   async save(data: SaveSessionRequest): Promise<Session> {
     const { userId, userAgent, sessionId } = data;
 
-    const session = await this.context.prisma.session.upsert({
+    const session = await this.prisma.session.upsert({
       where: { id: sessionId || '' },
       create: {
         userId,
@@ -41,14 +39,14 @@ export class SessionService {
   }
 
   async delete({ sessionId }: DeleteSessionRequest) {
-    return await this.context.prisma.session.delete({
+    return await this.prisma.session.delete({
       where: { id: sessionId },
     });
   }
 
   // TODO add strict
   async get({ sessionId }: GetSessionRequest) {
-    return await this.context.prisma.session.findFirst({
+    return await this.prisma.session.findFirst({
       where: { id: sessionId },
     });
   }

@@ -1,3 +1,2 @@
-export { storage, type IObjectStorageService, type Storage } from './object-storage';
-export { SessionService } from './session';
-export { UserService } from './user';
+export { type IService, createService } from './service';
+export { type IStorage, createStorage } from './storage';

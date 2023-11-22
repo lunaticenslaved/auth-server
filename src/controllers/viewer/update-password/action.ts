@@ -39,7 +39,7 @@ export async function updatePassword(request: Request, context: Context): Promis
     throw createSamePasswordError();
   }
 
-  const user = await context.services.user.update(userId, {
+  const user = await context.service.user.update(userId, {
     password: await createHash(newPassword),
   });
 

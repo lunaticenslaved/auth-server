@@ -22,8 +22,8 @@ export type Response = {
 export async function signUp(data: Request, context: Context): Promise<Response> {
   await Validation.validate(Operation.Auth.SignUp.validators, data);
 
-  const userWithLogin = await context.services.user.get({ login: data.login });
-  const userWithEmail = await context.services.user.get({ email: data.email });
+  const userWithLogin = await context.service.user.get({ login: data.login });
+  const userWithEmail = await context.service.user.get({ email: data.email });
 
   if (userWithLogin) {
     throw createUserWithLoginExistsError(data.login);
@@ -34,12 +34,12 @@ export async function signUp(data: Request, context: Context): Promise<Response>
   }
 
   const hashedPassword = await createHash(data.password);
-  const createdUser = await context.services.user.create({
+  const createdUser = await context.service.user.create({
     login: data.login,
     email: data.email,
     password: hashedPassword,
   });
-  const session = await context.services.session.save({
+  const session = await context.service.session.save({
     userAgent: data.userAgent,
     userId: createdUser.id,
   });

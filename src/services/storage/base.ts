@@ -5,28 +5,30 @@ import { randomUUID } from 'node:crypto';
 
 import { Constants } from '#/utils';
 
-export interface IObjectStorageService {
+export interface IObjectStorage {
   uploadFile(file: UploadedFile): Promise<{ link: string }>;
 }
 
-const storageEndpoint = 'https://storage.yandexcloud.net';
-
-type ObjectStorageServiceProps = {
+type ObjectStorageProps = {
   accessKeyId: string;
   secretAccessKey: string;
   bucketName: string;
+  endpoint: string;
 };
 
-class ObjectStorageService implements IObjectStorageService {
+export class ObjectStorage implements IObjectStorage {
   private client: S3Client;
   private bucketName: string;
+  private endpoint: string;
 
-  constructor({ bucketName, ...props }: ObjectStorageServiceProps) {
+  constructor({ bucketName, endpoint, ...props }: ObjectStorageProps) {
     this.bucketName = bucketName;
+    this.endpoint = endpoint;
+
     this.client = new S3Client({
+      endpoint,
       credentials: props,
       region: Constants.OBJECT_STORAGE_REGION,
-      endpoint: storageEndpoint,
     });
   }
 
@@ -38,7 +40,7 @@ class ObjectStorageService implements IObjectStorageService {
       Key: fileName,
     };
 
-    const link = `${storageEndpoint}/${Constants.OBJECT_STORAGE_AVATARS_NAME}/${fileName}`;
+    const link = `${this.endpoint}/${Constants.OBJECT_STORAGE_AVATARS_NAME}/${fileName}`;
 
     await this.client.send(new PutObjectCommand(params));
 
@@ -56,15 +58,3 @@ class ObjectStorageService implements IObjectStorageService {
     return { link };
   }
 }
-
-export type Storage = {
-  avatar: IObjectStorageService;
-};
-
-export const storage: Storage = {
-  avatar: new ObjectStorageService({
-    bucketName: Constants.OBJECT_STORAGE_AVATARS_NAME,
-    accessKeyId: Constants.OBJECT_STORAGE_AVATARS_KEY_ID,
-    secretAccessKey: Constants.OBJECT_STORAGE_AVATARS_SECRET,
-  }),
-};

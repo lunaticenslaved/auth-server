@@ -4,11 +4,11 @@ import { PrismaClient } from '@prisma/client';
 
 import { Context } from '#/context';
 import { Request, signUp } from '#/controllers/auth/sign-up/action';
-import { Storage } from '#/services';
+import { IStorage } from '#/services';
 
 jest.mock('./prisma');
 
-const storage: Storage = {
+const storage: IStorage = {
   avatar: {
     uploadFile(_: UploadedFile) {
       return Promise.resolve({ link: 'filepath' });

@@ -1,6 +1,7 @@
+import { PrismaClient } from '@prisma/client';
+
 import { Errors } from '@lunaticenslaved/schema';
 
-import { Context } from '#/context';
 import { User } from '#/dto/user';
 
 const select = {
@@ -68,14 +69,14 @@ export function createUserNotFoundError() {
   return new Errors.UnauthorizedError({ messages: 'User not found' });
 }
 export class UserService {
-  private context: Context;
+  private prisma: PrismaClient;
 
-  constructor(context: Context) {
-    this.context = context;
+  constructor(prisma: PrismaClient) {
+    this.prisma = prisma;
   }
 
   async create(data: CreateUserRequest): Promise<User> {
-    const user = await this.context.prisma.user.create({
+    const user = await this.prisma.user.create({
       select,
       data: {
         login: data.login,
@@ -88,7 +89,7 @@ export class UserService {
   }
 
   async update(userId: string, data: UpdateRequest): Promise<User> {
-    const user = await this.context.prisma.user.update({
+    const user = await this.prisma.user.update({
       where: { id: userId },
       data: {
         ...(data.password ? { password: { set: data.password } } : {}),
@@ -106,7 +107,7 @@ export class UserService {
   async get(props: GetUserRequest, type: 'strict'): Promise<User>;
   async get(props: GetUserRequest): Promise<User | undefined>;
   async get(props: GetUserRequest, type?: 'strict'): Promise<User | undefined> {
-    const user = await this.context.prisma.user.findFirst({
+    const user = await this.prisma.user.findFirst({
       where: {
         ...('login' in props ? { login: props.login } : {}),
         ...('email' in props ? { email: props.email } : {}),
@@ -123,7 +124,7 @@ export class UserService {
   }
 
   async getPassword(props: GetUserRequest): Promise<string> {
-    const user = await this.context.prisma.user.findFirst({
+    const user = await this.prisma.user.findFirst({
       where: {
         ...('login' in props ? { login: props.login } : {}),
         ...('email' in props ? { email: props.email } : {}),

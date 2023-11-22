@@ -5,5 +5,5 @@ type Request = {
 };
 
 export async function logout({ sessionId }: Request, context: Context) {
-  await context.services.session.delete({ sessionId });
+  await context.service.session.delete({ sessionId });
 }

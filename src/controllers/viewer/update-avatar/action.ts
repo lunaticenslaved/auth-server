@@ -20,7 +20,7 @@ export async function updateAvatar(request: Request, context: Context): Promise<
   await Validation.validate(validators, request);
 
   const { link } = await context.storage.avatar.uploadFile(avatar);
-  const user = await context.services.user.update(userId, {
+  const user = await context.service.user.update(userId, {
     uploadedAvatar: link,
   });
 

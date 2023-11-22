@@ -20,7 +20,7 @@ export async function updateInfo(request: Request, context: Context): Promise<Re
   const { userId, login } = request;
   await Validation.validate(validators, request);
 
-  const user = await context.services.user.update(userId, { login });
+  const user = await context.service.user.update(userId, { login });
 
   return { user };
 }

@@ -25,13 +25,13 @@ export const signIn = async (request: Request, context: Context): Promise<Respon
   const { sessionId, userAgent } = request;
 
   if (sessionId) {
-    await context.services.session.delete({ sessionId });
+    await context.service.session.delete({ sessionId });
   }
 
   await Validation.validate(Operation.Auth.SignIn.validators, request);
 
-  const user = await context.services.user.get({ login: request.login }, 'strict');
-  const savedPassword = await context.services.user.getPassword({ userId: user.id });
+  const user = await context.service.user.get({ login: request.login }, 'strict');
+  const savedPassword = await context.service.user.getPassword({ userId: user.id });
 
   // TODO move errors to all
   if (!user) {
@@ -42,7 +42,7 @@ export const signIn = async (request: Request, context: Context): Promise<Respon
     throw createInvalidPasswordError();
   }
 
-  const session = await context.services.session.save({ userAgent, userId: user.id });
+  const session = await context.service.session.save({ userAgent, userId: user.id });
   const tokens = TokensUtils.createTokens({ userId: user.id, sessionId: session.id });
 
   return { ...tokens, user };
