@@ -8,6 +8,11 @@ declare global {
 
       DATABASE_URL: string;
 
+      CLIENT_URL: string;
+      CLIENT_ACTIVATION_URI: string;
+
+      RANDOM_TOKEN_SECRET_KEY: string;
+
       ACCESS_TOKEN_SECRET: string;
       REFRESH_TOKEN_SECRET: string;
       ACCESS_TOKEN_EXPIRES_IN: string;
@@ -17,6 +22,11 @@ declare global {
       OBJECT_STORAGE_AVATARS_NAME: string;
       OBJECT_STORAGE_AVATARS_KEY_ID: string;
       OBJECT_STORAGE_AVATARS_SECRET: string;
+
+      MAIL_SMTP_HOST: string;
+      MAIL_SMTP_PORT: string;
+      MAIL_SMTP_USER: string;
+      MAIL_SMTP_PASSWORD: string;
     }
   }
 }

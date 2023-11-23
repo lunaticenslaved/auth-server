@@ -8,6 +8,7 @@ const prisma = new PrismaClient();
 type CreateContext = {
   prisma: PrismaClient;
   storage: IStorage;
+  mailService?: IService['mail'];
 };
 
 export class Context {
@@ -15,10 +16,14 @@ export class Context {
   storage: IStorage;
   service: IService;
 
-  constructor({ storage, prisma }: CreateContext) {
+  constructor({ storage, prisma, mailService }: CreateContext) {
     this.prisma = prisma;
     this.storage = storage;
     this.service = createService(prisma);
+
+    if (mailService) {
+      this.service.mail = mailService;
+    }
   }
 }
 

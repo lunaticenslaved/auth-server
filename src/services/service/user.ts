@@ -55,6 +55,10 @@ type NotPreparedUser = {
   avatars: AvatarNotPrepared[];
 };
 
+type ActivateRequest = {
+  userId: string;
+};
+
 function prepare(user: NotPreparedUser): User {
   return {
     id: user.id,
@@ -140,5 +144,23 @@ export class UserService {
     }
 
     return user.password;
+  }
+
+  async activate({ userId }: ActivateRequest) {
+    const user = await this.prisma.user.update({
+      where: {
+        id: userId,
+      },
+      data: {
+        isActivated: true,
+      },
+      select,
+    });
+
+    if (!user) {
+      throw createUserNotFoundError();
+    }
+
+    return user ? prepare(user) : undefined;
   }
 }

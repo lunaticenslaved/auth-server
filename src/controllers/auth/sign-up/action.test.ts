@@ -94,3 +94,17 @@ test('can sign up', async () => {
 
   expect(user.login).toBe('login');
 });
+
+test('activation letter has been send', async () => {
+  await signUp(
+    {
+      userAgent: 'chrome',
+      email: 'test@test.ru',
+      login: 'login',
+      password: 'password',
+    },
+    Mock.context,
+  );
+
+  expect((Mock.context.service.mail.sendUserActivationMail as jest.Mock).mock.calls.length).toBe(1);
+});

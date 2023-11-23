@@ -102,7 +102,7 @@ export function checkIfTokenExpired(req: TokenDataRequest): void {
       jwt.verify(req.refreshToken, Constants.REFRESH_TOKEN_SECRET as string);
     } catch (error) {
       if (error instanceof TokenExpiredError) {
-        throw new Errors.TokenExpiredError({ messages: 'Expired token' });
+        throw new Errors.RefreshTokenExpiredError({ messages: 'Expired token' });
       }
 
       throw new Errors.TokenInvalidError({ messages: 'Invalid token' });

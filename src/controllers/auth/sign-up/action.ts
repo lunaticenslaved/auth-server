@@ -49,5 +49,10 @@ export async function signUp(data: Request, context: Context): Promise<Response>
     sessionId: session.id,
   });
 
+  context.service.mail.sendUserActivationMail({
+    email: createdUser.email,
+    userId: createdUser.id,
+  });
+
   return { ...tokens, user: createdUser };
 }

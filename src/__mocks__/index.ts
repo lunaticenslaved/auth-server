@@ -5,6 +5,7 @@ import { PrismaClient } from '@prisma/client';
 import { Context } from '#/context';
 import { Request, signUp } from '#/controllers/auth/sign-up/action';
 import { IStorage } from '#/services';
+import { IMailService } from '#/services/service/mail';
 
 jest.mock('./prisma');
 
@@ -16,9 +17,21 @@ const storage: IStorage = {
   },
 };
 
+const mailService: IMailService = {
+  sendUserActivationMail: jest.fn(_ => null),
+  getUserIdFromActivationToken() {
+    return '';
+  },
+};
+
+afterEach(() => {
+  (mailService.sendUserActivationMail as jest.Mock).mockClear();
+});
+
 const context = new Context({
   storage,
   prisma: new PrismaClient(),
+  mailService,
 });
 
 export const Mock = {
