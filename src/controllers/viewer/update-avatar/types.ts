@@ -2,9 +2,12 @@ import { UploadedFile } from 'express-fileupload';
 
 import '@prisma/client';
 
-import { Operation } from '@lunaticenslaved/schema';
+import {
+  UpdateAvatarRequest as SchemaUpdateAvatarRequest,
+  UpdateAvatarResponse as SchemaUpdateAvatarResponse,
+} from '@lunaticenslaved/schema/actions';
 
-export type UpdateAvatarRequest = Omit<Operation.Viewer.UpdateAvatarRequest, 'avatar'> & {
+export type UpdateAvatarRequest = Omit<SchemaUpdateAvatarRequest, 'avatar'> & {
   avatar: UploadedFile;
 };
-export type UpdateAvatarResponse = Operation.Viewer.UpdateAvatarResponse;
+export type UpdateAvatarResponse = SchemaUpdateAvatarResponse;

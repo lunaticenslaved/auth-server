@@ -1,7 +1,6 @@
 import { Context } from '#/context';
-import { User } from '#/dto/user';
-// FIXME move to common errors? create domain errors?
-import { createUserNotFoundError } from '#/services/service/user';
+import { createUserNotFoundError } from '#/errors';
+import { User } from '#/models';
 import { TokensUtils } from '#/utils';
 
 type Request = {

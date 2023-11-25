@@ -1,9 +1,9 @@
 import bcrypt from 'bcrypt';
 
-import { Operation, Validation } from '@lunaticenslaved/schema';
+import schema from '@lunaticenslaved/schema';
 
 import { Context } from '#/context';
-import { User } from '#/dto';
+import { User } from '#/models';
 import { TokensUtils } from '#/utils';
 
 import { createInvalidPasswordError, createUserWithLoginNotExistsError } from './errors';
@@ -28,7 +28,7 @@ export const signIn = async (request: Request, context: Context): Promise<Respon
     await context.service.session.delete({ sessionId });
   }
 
-  await Validation.validate(Operation.Auth.SignIn.validators, request);
+  await schema.Validation.validate(schema.validators.auth.signIn, request);
 
   const user = await context.service.user.get({ login: request.login }, 'strict');
   const savedPassword = await context.service.user.getPassword({ userId: user.id });

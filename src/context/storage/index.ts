@@ -1,5 +1,6 @@
-import { IObjectStorage, ObjectStorage } from '#/services/storage/base';
 import { Constants } from '#/utils';
+
+import { IObjectStorage, ObjectStorage } from './base';
 
 const endpoint = 'https://storage.yandexcloud.net';
 

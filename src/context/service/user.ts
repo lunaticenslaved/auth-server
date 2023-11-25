@@ -1,8 +1,7 @@
 import { PrismaClient } from '@prisma/client';
 
-import { Errors } from '@lunaticenslaved/schema';
-
-import { User } from '#/dto/user';
+import { createUserNotFoundError } from '#/errors';
+import { User } from '#/models';
 
 const select = {
   id: true,
@@ -73,9 +72,6 @@ function prepare(user: NotPreparedUser): User {
   };
 }
 
-export function createUserNotFoundError() {
-  return new Errors.UnauthorizedError({ messages: 'User not found' });
-}
 export class UserService {
   private prisma: PrismaClient;
 

@@ -1,4 +1,4 @@
-import { User } from '#/dto';
+import { User } from '#/models';
 
 export type UpdatePasswordRequest = {
   oldPassword: string;

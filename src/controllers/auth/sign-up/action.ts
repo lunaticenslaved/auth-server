@@ -1,7 +1,7 @@
-import { Operation, Validation } from '@lunaticenslaved/schema';
+import schema from '@lunaticenslaved/schema';
 
 import { Context } from '#/context';
-import { User } from '#/dto';
+import { User } from '#/models';
 import { TokensUtils, createHash } from '#/utils';
 
 import { createUserWithEmailExistsError, createUserWithLoginExistsError } from './errors';
@@ -20,7 +20,7 @@ export type Response = {
 };
 
 export async function signUp(data: Request, context: Context): Promise<Response> {
-  await Validation.validate(Operation.Auth.SignUp.validators, data);
+  await schema.Validation.validate(schema.validators.auth.signIn, data);
 
   const userWithLogin = await context.service.user.get({ login: data.login });
   const userWithEmail = await context.service.user.get({ email: data.email });

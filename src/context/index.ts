@@ -1,7 +1,12 @@
 import { PrismaClient } from '@prisma/client';
 
-import { IService, IStorage, createService, createStorage } from '#/services';
 import { createOperationWithContext } from '#/utils/operation';
+
+import { IService, createService } from './service';
+import { IStorage, createStorage } from './storage';
+
+export type { IService, IStorage };
+export type { IMailService } from './service/mail';
 
 const prisma = new PrismaClient();
 

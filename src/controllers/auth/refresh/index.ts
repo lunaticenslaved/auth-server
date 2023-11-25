@@ -1,13 +1,11 @@
-import { Operation } from '@lunaticenslaved/schema';
+import { RefreshResponse } from '@lunaticenslaved/schema/actions';
 
 import { createOperation } from '#/context';
 import { RequestUtils, TokensUtils } from '#/utils';
 
 import { refresh as action } from './action';
 
-type Response = Operation.Auth.RefreshResponse;
-
-export const refresh = createOperation<Response>(async (req, res, context) => {
+export const refresh = createOperation<RefreshResponse>(async (req, res, context) => {
   const { refreshToken } = TokensUtils.getTokens(req, 'strict');
 
   TokensUtils.checkIfTokenExpired({ refreshToken });

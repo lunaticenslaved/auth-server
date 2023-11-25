@@ -1,5 +1,5 @@
 import { createOperation } from '#/context';
-import { User } from '#/dto';
+import { User } from '#/models';
 import { RequestUtils } from '#/utils';
 
 import { updateInfo as action } from './action';

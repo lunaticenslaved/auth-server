@@ -1,5 +1,5 @@
 {
-  "extends": "./node_modules/@lunaticenslaved/schema/tsconfig.base.json",
+  "extends": "./node_modules/@lunaticenslaved/configs/tsconfig.base.json",
   "ts-node": {
     "require": ["tsconfig-paths/register"],
     "files": true

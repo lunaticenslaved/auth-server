@@ -1,7 +1,7 @@
 import { Validation, Validators } from '@lunaticenslaved/schema';
 
 import { Context } from '#/context';
-import { User } from '#/dto/user';
+import { User } from '#/models';
 
 type Request = {
   userId: string;

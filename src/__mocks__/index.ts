@@ -2,10 +2,8 @@ import { UploadedFile } from 'express-fileupload';
 
 import { PrismaClient } from '@prisma/client';
 
-import { Context } from '#/context';
+import { Context, IMailService, IStorage } from '#/context';
 import { Request, signUp } from '#/controllers/auth/sign-up/action';
-import { IStorage } from '#/services';
-import { IMailService } from '#/services/service/mail';
 
 jest.mock('./prisma');
 
