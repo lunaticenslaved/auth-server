@@ -1,1 +1,1 @@
-module.exports = require('@lunaticenslaved/schema/.prettierrc.js');
+module.exports = require('@lunaticenslaved/configs/prettier');
