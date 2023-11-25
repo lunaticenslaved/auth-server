@@ -3,7 +3,11 @@ import crypto from 'crypto';
 import { Constants } from '#/utils';
 
 const algorithm = 'aes-256-ctr';
-const key = crypto.scryptSync(Constants.RANDOM_TOKEN_SECRET_KEY, 'salt', 32);
+const key = crypto.scryptSync(
+  Constants.RANDOM_TOKEN_SECRET_KEY || 'secret',
+  Constants.RANDOM_TOKEN_SALT || 'salt',
+  32,
+);
 const iv = Buffer.alloc(16, 0);
 
 export function encrypt(data: string): string {

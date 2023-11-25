@@ -12,6 +12,7 @@ declare global {
       CLIENT_ACTIVATION_URI: string;
 
       RANDOM_TOKEN_SECRET_KEY: string;
+      RANDOM_TOKEN_SALT: string;
 
       ACCESS_TOKEN_SECRET: string;
       REFRESH_TOKEN_SECRET: string;

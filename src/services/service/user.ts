@@ -59,6 +59,10 @@ type ActivateRequest = {
   userId: string;
 };
 
+interface ListUsersRequest {
+  userIds: string[];
+}
+
 function prepare(user: NotPreparedUser): User {
   return {
     id: user.id,
@@ -162,5 +166,14 @@ export class UserService {
       });
 
     return user ? prepare(user) : undefined;
+  }
+
+  list(data: ListUsersRequest) {
+    return this.prisma.user.findMany({
+      select,
+      where: {
+        id: { in: data.userIds },
+      },
+    });
   }
 }
