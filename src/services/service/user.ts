@@ -147,19 +147,19 @@ export class UserService {
   }
 
   async activate({ userId }: ActivateRequest) {
-    const user = await this.prisma.user.update({
-      where: {
-        id: userId,
-      },
-      data: {
-        isActivated: true,
-      },
-      select,
-    });
-
-    if (!user) {
-      throw createUserNotFoundError();
-    }
+    const user = await this.prisma.user
+      .update({
+        where: {
+          id: userId,
+        },
+        data: {
+          isActivated: true,
+        },
+        select,
+      })
+      .catch(() => {
+        throw createUserNotFoundError();
+      });
 
     return user ? prepare(user) : undefined;
   }
