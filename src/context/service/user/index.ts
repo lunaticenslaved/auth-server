@@ -1,76 +1,22 @@
 import { PrismaClient } from '@prisma/client';
 
 import { createUserNotFoundError } from '#/errors';
-import { User } from '#/models';
 
-const select = {
-  id: true,
-  login: true,
-  email: true,
-  isActivated: true,
-  avatars: {
-    select: {
-      id: true,
-      link: true,
-      isCurrent: true,
-    },
-  },
-};
-
-type CreateUserRequest = {
-  login: string;
-  email: string;
-  password: string;
-};
-
-type GetUserRequest =
-  | {
-      userId: string;
-    }
-  | {
-      login: string;
-    }
-  | {
-      email: string;
-    };
-
-type UpdateRequest = {
-  login?: string;
-  uploadedAvatar?: string;
-  password?: string;
-};
-
-type AvatarNotPrepared = {
-  id: string;
-  link: string;
-  isCurrent: boolean;
-};
-
-type NotPreparedUser = {
-  id: string;
-  login: string;
-  email: string;
-  isActivated: boolean;
-  avatars: AvatarNotPrepared[];
-};
-
-type ActivateRequest = {
-  userId: string;
-};
-
-interface ListUsersRequest {
-  userIds: string[];
-}
-
-function prepare(user: NotPreparedUser): User {
-  return {
-    id: user.id,
-    login: user.login,
-    email: user.email,
-    isActivated: user.isActivated,
-    avatar: user.avatars.find(({ isCurrent }) => !!isCurrent) || null,
-  };
-}
+import {
+  ActivateUserRequest,
+  ActivateUserResponse,
+  CreateUserRequest,
+  CreateUserResponse,
+  GetUserRequest,
+  GetUserResponse,
+  ListUsersRequest,
+  ListUsersResponse,
+  SearchUsersRequest,
+  SearchUsersResponse,
+  UpdateUserRequest,
+  UpdateUserResponse,
+} from './types';
+import { prepare, select } from './utils';
 
 export class UserService {
   private prisma: PrismaClient;
@@ -79,7 +25,7 @@ export class UserService {
     this.prisma = prisma;
   }
 
-  async create(data: CreateUserRequest): Promise<User> {
+  async create(data: CreateUserRequest): Promise<CreateUserResponse> {
     const user = await this.prisma.user.create({
       select,
       data: {
@@ -92,7 +38,8 @@ export class UserService {
     return prepare(user);
   }
 
-  async update(userId: string, data: UpdateRequest): Promise<User> {
+  async update(data: UpdateUserRequest): Promise<UpdateUserResponse> {
+    const { userId } = data;
     const user = await this.prisma.user.update({
       where: { id: userId },
       data: {
@@ -108,9 +55,9 @@ export class UserService {
     return prepare(user);
   }
 
-  async get(props: GetUserRequest, type: 'strict'): Promise<User>;
-  async get(props: GetUserRequest): Promise<User | undefined>;
-  async get(props: GetUserRequest, type?: 'strict'): Promise<User | undefined> {
+  async get(props: GetUserRequest, type: 'strict'): Promise<GetUserResponse>;
+  async get(props: GetUserRequest): Promise<GetUserResponse | undefined>;
+  async get(props: GetUserRequest, type?: 'strict'): Promise<GetUserResponse | undefined> {
     const user = await this.prisma.user.findFirst({
       where: {
         ...('login' in props ? { login: props.login } : {}),
@@ -146,7 +93,7 @@ export class UserService {
     return user.password;
   }
 
-  async activate({ userId }: ActivateRequest) {
+  async activate({ userId }: ActivateUserRequest): Promise<ActivateUserResponse> {
     const user = await this.prisma.user
       .update({
         where: {
@@ -161,15 +108,36 @@ export class UserService {
         throw createUserNotFoundError();
       });
 
-    return user ? prepare(user) : undefined;
+    return prepare(user);
   }
 
-  list(data: ListUsersRequest) {
-    return this.prisma.user.findMany({
+  async list(data: ListUsersRequest): Promise<ListUsersResponse> {
+    const users = await this.prisma.user.findMany({
       select,
       where: {
         id: { in: data.userIds },
       },
     });
+
+    return users.map(prepare);
+  }
+
+  async search(data: SearchUsersRequest): Promise<SearchUsersResponse> {
+    const users = await this.prisma.user.findMany({
+      where: {
+        OR: [
+          {
+            login: { contains: data.search },
+          },
+          {
+            email: { contains: data.search },
+          },
+        ],
+      },
+      take: data.take || 20,
+      select,
+    });
+
+    return users.map(prepare);
   }
 }

@@ -8,6 +8,7 @@ import cors from 'cors';
 import { context } from '#/context';
 import { addRouter } from '#/controllers';
 import { Constants } from '#/utils';
+import { CORS_WHITELIST } from '#/utils/constants';
 
 export async function createApp() {
   await context.prisma.$connect();
@@ -20,12 +21,11 @@ export async function createApp() {
   app.use(fileUpload());
   app.use(cookieParser());
 
-  const whitelist = ['http://localhost:3000'];
   app.use(
     cors({
       credentials: true,
       origin: function (origin, callback) {
-        if (origin && whitelist.includes(origin)) {
+        if (origin && CORS_WHITELIST.includes(origin)) {
           callback(null, true);
         } else {
           console.log('origin:', origin, 'not allowed');
