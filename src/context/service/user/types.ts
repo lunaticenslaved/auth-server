@@ -25,7 +25,9 @@ export interface ActivateUserRequest {
 
 export type ListUsersResponse = User[];
 export interface ListUsersRequest {
-  userIds: string[];
+  userIds?: string[];
+  search?: string;
+  take?: number;
 }
 
 export type SearchUsersResponse = User[];

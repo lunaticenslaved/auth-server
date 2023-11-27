@@ -1,12 +1,19 @@
 import { createOperation } from '#/context';
+import { User } from '#/models';
 
 interface ActivateRequestBody {
   activationToken: string;
 }
 
-export const activate = createOperation(async (req, _, context) => {
+interface ActivateResponse {
+  user: User;
+}
+
+export const activate = createOperation<ActivateResponse>(async (req, _, context) => {
   const { activationToken } = req.body as ActivateRequestBody;
 
   const userId = context.service.mail.getUserIdFromActivationToken(activationToken);
-  await context.service.user.activate({ userId });
+  const user = await context.service.user.activate({ userId });
+
+  return { user };
 });

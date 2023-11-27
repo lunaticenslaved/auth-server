@@ -16,25 +16,22 @@ export class MailService implements IMailService {
     });
   }
 
-  public getUserIdFromActivationToken(activationToken: string) {
-    return CryptoUtils.decrypt(decodeURIComponent(activationToken));
+  getUserIdFromActivationToken(activationToken: string) {
+    return decodeURIComponent(activationToken);
   }
 
   async sendUserActivationMail(data: SendUserActivationMailRequest) {
     const { email, userId } = data;
-    const activationToken = encodeURIComponent(CryptoUtils.encrypt(userId));
-    const link = `${Constants.CLIENT_URL}/${Constants.CLIENT_ACTIVATION_URI}/${activationToken}`
-      .replaceAll('///', '/')
-      .replaceAll('//', '/');
+    const activationToken = CryptoUtils.encrypt(userId);
 
     await this.sendMail({
       to: email,
-      subject: 'Активация аккаунта на ' + Constants.CLIENT_URL,
+      subject: 'Активация аккаунта',
       text: '',
       html: `
             <div>
-              <h1>Для активации перейдите по ссылке</h2>
-              <a href="${link}">${link}</a>
+              <h1>Введите код для активации</h2>
+              <p>${activationToken}</p>
             </div>
           `,
     });

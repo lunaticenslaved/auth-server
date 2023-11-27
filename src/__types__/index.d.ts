@@ -8,8 +8,6 @@ declare global {
 
       DATABASE_URL: string;
 
-      CLIENT_URL: string;
-      CLIENT_ACTIVATION_URI: string;
       CORS_WHITELIST: string;
 
       RANDOM_TOKEN_SECRET_KEY: string;

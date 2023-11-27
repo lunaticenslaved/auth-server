@@ -11,8 +11,6 @@ import {
   GetUserResponse,
   ListUsersRequest,
   ListUsersResponse,
-  SearchUsersRequest,
-  SearchUsersResponse,
   UpdateUserRequest,
   UpdateUserResponse,
 } from './types';
@@ -112,30 +110,25 @@ export class UserService {
   }
 
   async list(data: ListUsersRequest): Promise<ListUsersResponse> {
+    const { userIds, search, take } = data;
     const users = await this.prisma.user.findMany({
       select,
+      take: userIds?.length || take || 20,
       where: {
-        id: { in: data.userIds },
+        ...(userIds?.length ? { id: { in: userIds } } : {}),
+        ...(search
+          ? {
+              OR: [
+                {
+                  login: { contains: search },
+                },
+                {
+                  email: { contains: search },
+                },
+              ],
+            }
+          : {}),
       },
-    });
-
-    return users.map(prepare);
-  }
-
-  async search(data: SearchUsersRequest): Promise<SearchUsersResponse> {
-    const users = await this.prisma.user.findMany({
-      where: {
-        OR: [
-          {
-            login: { contains: data.search },
-          },
-          {
-            email: { contains: data.search },
-          },
-        ],
-      },
-      take: data.take || 20,
-      select,
     });
 
     return users.map(prepare);
