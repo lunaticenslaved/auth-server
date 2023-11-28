@@ -17,7 +17,7 @@ export class MailService implements IMailService {
   }
 
   getUserIdFromActivationToken(activationToken: string) {
-    return decodeURIComponent(activationToken);
+    return CryptoUtils.decrypt(activationToken);
   }
 
   async sendUserActivationMail(data: SendUserActivationMailRequest) {

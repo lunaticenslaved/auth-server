@@ -10,10 +10,12 @@ export const refresh = createOperation<RefreshResponse>(async (req, res, context
 
   TokensUtils.checkIfTokenExpired({ refreshToken });
 
+  const { sessionId, userId } = TokensUtils.getTokenData({ refreshToken }, 'strict');
+
   const { user, ...tokens } = await action(
     {
-      sessionId: RequestUtils.getSessionId(req, 'strict'),
-      userId: RequestUtils.getUserId(req, 'strict'),
+      sessionId,
+      userId,
       userAgent: RequestUtils.getUserAgent(req),
     },
     context,

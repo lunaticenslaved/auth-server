@@ -71,7 +71,13 @@ export function getTokenData(
     try {
       return jwt.verify(prop.refreshToken, Constants.REFRESH_TOKEN_SECRET as string) as TokenData;
     } catch (error) {
-      if (type === 'strict') throw error;
+      if (type === 'strict') {
+        if (error instanceof TokenExpiredError) {
+          throw new Errors.RefreshTokenExpiredError({ messages: 'Refresh token expired' });
+        }
+
+        throw error;
+      }
 
       return {};
     }
@@ -79,7 +85,13 @@ export function getTokenData(
     try {
       return jwt.verify(prop.accessToken, Constants.ACCESS_TOKEN_SECRET as string) as TokenData;
     } catch (error) {
-      if (type === 'strict') throw error;
+      if (type === 'strict') {
+        if (error instanceof TokenExpiredError) {
+          throw new Errors.TokenExpiredError({ messages: 'Access token expired' });
+        }
+
+        throw error;
+      }
 
       return {};
     }
@@ -92,7 +104,7 @@ export function checkIfTokenExpired(req: TokenDataRequest): void {
       jwt.verify(req.accessToken, Constants.ACCESS_TOKEN_SECRET as string);
     } catch (error) {
       if (error instanceof TokenExpiredError) {
-        throw new Errors.TokenExpiredError({ messages: 'Expired token' });
+        throw new Errors.TokenExpiredError({ messages: 'Access token expired' });
       }
 
       throw new Errors.TokenInvalidError({ messages: 'Invalid token' });
@@ -102,7 +114,7 @@ export function checkIfTokenExpired(req: TokenDataRequest): void {
       jwt.verify(req.refreshToken, Constants.REFRESH_TOKEN_SECRET as string);
     } catch (error) {
       if (error instanceof TokenExpiredError) {
-        throw new Errors.RefreshTokenExpiredError({ messages: 'Expired token' });
+        throw new Errors.RefreshTokenExpiredError({ messages: 'Refresh token expired' });
       }
 
       throw new Errors.TokenInvalidError({ messages: 'Invalid token' });
