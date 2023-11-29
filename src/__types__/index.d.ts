@@ -3,12 +3,12 @@ import 'express';
 declare global {
   namespace NodeJS {
     interface ProcessEnv {
-      APP_ENV: 'dev' | 'prod';
+      APP_ENV: 'dev' | 'production';
       PORT?: string;
 
       DATABASE_URL: string;
 
-      CORS_WHITELIST: string;
+      CORS_WHITELIST?: string;
 
       RANDOM_TOKEN_SECRET_KEY: string;
       RANDOM_TOKEN_SALT: string;
