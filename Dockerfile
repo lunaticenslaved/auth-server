@@ -16,7 +16,7 @@ COPY --from=build /app/schema.prisma /app
 RUN apk update \ 
     && apk add --no-cache openssl \
     && npm i --omit=dev \ 
-    && npx prisma generate
+#    && npx prisma generate
 COPY --from=build /app/dist /app 
 USER 1000
 EXPOSE 3000
