@@ -14,7 +14,8 @@ WORKDIR /app
 COPY --from=build /app/package.json /app 
 COPY --from=build /app/schema.prisma /app 
 RUN apk add --no-cache openssl \
-    && npm i --omit=dev
+    && npm i --omit=dev \ 
+    && npx prisma generate
 COPY --from=build /app/dist /app 
 USER 1000
 EXPOSE 3000
