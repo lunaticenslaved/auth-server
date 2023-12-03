@@ -17,14 +17,20 @@ type Tokens = {
 };
 
 export function removeTokensFormResponse(res: Response) {
-  res.clearCookie('refreshToken');
+  res.clearCookie('refreshToken', { httpOnly: true, secure: true });
+  res.clearCookie('accessToken', { httpOnly: true, secure: true });
 }
 
 export function getTokens(req: Request): Partial<Tokens>;
 export function getTokens(req: Request, type: 'strict'): Tokens;
 export function getTokens(req: Request, type?: 'strict'): Partial<Tokens> | Tokens;
 export function getTokens(req: Request, type?: 'strict' | undefined): Partial<Tokens> | Tokens {
-  const accessToken = req.headers['authorization']?.split(' ')[1];
+  let accessToken = req.headers['authorization']?.split(' ')[1];
+
+  if (accessToken) {
+    accessToken = req.cookies['accessToken'] as string | undefined;
+  }
+
   const refreshToken = req.cookies['refreshToken'] as string | undefined;
 
   if ((!accessToken || !refreshToken) && type === 'strict') {
@@ -34,8 +40,9 @@ export function getTokens(req: Request, type?: 'strict' | undefined): Partial<To
   return { accessToken, refreshToken };
 }
 
-export function setTokensToResponse(tokens: Pick<Tokens, 'refreshToken'>, res: Response) {
+export function setTokensToResponse(tokens: Tokens, res: Response) {
   res.cookie('refreshToken', tokens.refreshToken);
+  res.cookie('accessToken', tokens.accessToken);
 }
 
 export function createTokens(data: TokenData) {
