@@ -2,7 +2,7 @@ export const APP_ENV = process.env.APP_ENV;
 export const IS_DEV = APP_ENV === 'dev';
 
 export const PORT = Number(process.env.PORT) || 3000;
-export const CORS_WHITELIST = JSON.parse(process.env.CORS_WHITELIST || '[]');
+export const DOMAIN = process.env.DOMAIN;
 
 export const RANDOM_TOKEN_SECRET_KEY = process.env.RANDOM_TOKEN_SECRET_KEY;
 export const RANDOM_TOKEN_SALT = process.env.RANDOM_TOKEN_SALT;

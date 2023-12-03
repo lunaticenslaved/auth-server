@@ -9,7 +9,7 @@ import { context } from '#/context';
 import { addRouter } from '#/controllers';
 import { logRequest } from '#/middlewares';
 import { Constants, logger } from '#/utils';
-import { CORS_WHITELIST } from '#/utils/constants';
+import { DOMAIN } from '#/utils/constants';
 
 export async function createApp() {
   await context.prisma.$connect();
@@ -28,7 +28,7 @@ export async function createApp() {
     cors({
       credentials: true,
       origin: function (origin, callback) {
-        if (origin && CORS_WHITELIST.includes(origin)) {
+        if (origin?.endsWith(DOMAIN)) {
           logger.info(`[CORS]: origin '${origin}' allowed`);
           callback(null, true);
         } else {

@@ -5,6 +5,7 @@ import jwt, { TokenExpiredError } from 'jsonwebtoken';
 import { Errors } from '@lunaticenslaved/schema';
 
 import { Constants, logger } from '#/utils';
+import { DOMAIN } from '#/utils/constants';
 
 type TokenData = {
   userId: string;
@@ -46,8 +47,8 @@ export function getTokens(req: Request, type?: 'strict' | undefined): Partial<To
 }
 
 export function setTokensToResponse(tokens: Tokens, res: Response) {
-  res.cookie('refreshToken', tokens.refreshToken, { httpOnly: true, secure: true });
-  res.cookie('accessToken', tokens.accessToken, { httpOnly: true, secure: true });
+  res.cookie('refreshToken', tokens.refreshToken, { httpOnly: true, secure: true, domain: DOMAIN });
+  res.cookie('accessToken', tokens.accessToken, { httpOnly: true, secure: true, domain: DOMAIN });
 }
 
 export function createTokens(data: TokenData) {

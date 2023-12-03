@@ -8,7 +8,7 @@ declare global {
 
       DATABASE_URL: string;
 
-      CORS_WHITELIST?: string;
+      DOMAIN: string;
 
       RANDOM_TOKEN_SECRET_KEY: string;
       RANDOM_TOKEN_SALT: string;
