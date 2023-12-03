@@ -7,7 +7,7 @@ import cors from 'cors';
 
 import { context } from '#/context';
 import { addRouter } from '#/controllers';
-import { Constants } from '#/utils';
+import { Constants, logger } from '#/utils';
 import { CORS_WHITELIST } from '#/utils/constants';
 
 export async function createApp() {
@@ -26,9 +26,10 @@ export async function createApp() {
       credentials: true,
       origin: function (origin, callback) {
         if (origin && CORS_WHITELIST.includes(origin)) {
+          logger.info(`[CORS]: origin '${origin}' allowed`);
           callback(null, true);
         } else {
-          console.log('origin:', origin, 'not allowed');
+          logger.error(`[CORS]: origin '${origin}' not allowed`);
           callback(new Error('Not allowed by CORS'));
         }
       },
@@ -40,7 +41,7 @@ export async function createApp() {
   addRouter(app);
 
   app.listen(Constants.PORT, () => {
-    console.log(
+    logger.info(
       `  ➜ 🎸 [DEV] Server is listening on port: ${Constants.PORT}. Use this server: http://localhost:${Constants.PORT}`,
     );
   });
