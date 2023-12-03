@@ -7,6 +7,7 @@ import cors from 'cors';
 
 import { context } from '#/context';
 import { addRouter } from '#/controllers';
+import { logRequest } from '#/middlewares';
 import { Constants, logger } from '#/utils';
 import { CORS_WHITELIST } from '#/utils/constants';
 
@@ -20,6 +21,8 @@ export async function createApp() {
 
   app.use(fileUpload());
   app.use(cookieParser());
+
+  app.use(logRequest);
 
   app.use(
     cors({

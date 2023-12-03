@@ -8,7 +8,7 @@ import { refresh as action } from './action';
 export const refresh = createOperation<RefreshResponse>(async (req, res, context) => {
   const { refreshToken } = TokensUtils.getTokens(req, 'strict');
 
-  TokensUtils.checkIfTokenExpired({ refreshToken });
+  TokensUtils.checkIfTokenIsValid({ refreshToken });
 
   const { sessionId, userId } = TokensUtils.getTokenData({ refreshToken }, 'strict');
 

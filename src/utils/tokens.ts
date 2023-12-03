@@ -4,7 +4,7 @@ import jwt, { TokenExpiredError } from 'jsonwebtoken';
 
 import { Errors } from '@lunaticenslaved/schema';
 
-import { Constants } from '#/utils';
+import { Constants, logger } from '#/utils';
 
 type TokenData = {
   userId: string;
@@ -17,8 +17,8 @@ type Tokens = {
 };
 
 export function removeTokensFormResponse(res: Response) {
-  res.clearCookie('refreshToken', { httpOnly: true, secure: true });
-  res.clearCookie('accessToken', { httpOnly: true, secure: true });
+  res.clearCookie('refreshToken');
+  res.clearCookie('accessToken');
 }
 
 export function getTokens(req: Request): Partial<Tokens>;
@@ -27,13 +27,18 @@ export function getTokens(req: Request, type?: 'strict'): Partial<Tokens> | Toke
 export function getTokens(req: Request, type?: 'strict' | undefined): Partial<Tokens> | Tokens {
   let accessToken = req.headers['authorization']?.split(' ')[1];
 
-  if (accessToken) {
+  if (!accessToken) {
     accessToken = req.cookies['accessToken'] as string | undefined;
   }
 
   const refreshToken = req.cookies['refreshToken'] as string | undefined;
 
+  logger.info(
+    `[TOKEN] Get tokens from request: access - ${!!accessToken}, refresh - ${!!refreshToken}`,
+  );
+
   if ((!accessToken || !refreshToken) && type === 'strict') {
+    logger.error(`[TOKEN] Get tokens from request: strict tokens not valid`);
     throw new Errors.TokenInvalidError({ messages: 'Tokens are not valid' });
   }
 
@@ -41,8 +46,8 @@ export function getTokens(req: Request, type?: 'strict' | undefined): Partial<To
 }
 
 export function setTokensToResponse(tokens: Tokens, res: Response) {
-  res.cookie('refreshToken', tokens.refreshToken);
-  res.cookie('accessToken', tokens.accessToken);
+  res.cookie('refreshToken', tokens.refreshToken, { httpOnly: true, secure: true });
+  res.cookie('accessToken', tokens.accessToken, { httpOnly: true, secure: true });
 }
 
 export function createTokens(data: TokenData) {
@@ -75,28 +80,28 @@ export function getTokenData(
   type?: 'strict',
 ): TokenData | Partial<TokenData> {
   if ('refreshToken' in prop) {
+    logger.info(`[TOKEN] Get refresh token data`);
+
     try {
+      checkIfTokenIsValid(prop);
+
       return jwt.verify(prop.refreshToken, Constants.REFRESH_TOKEN_SECRET as string) as TokenData;
     } catch (error) {
       if (type === 'strict') {
-        if (error instanceof TokenExpiredError) {
-          throw new Errors.RefreshTokenExpiredError({ messages: 'Refresh token expired' });
-        }
-
         throw error;
       }
 
       return {};
     }
   } else {
+    logger.info(`[TOKEN] Get access token data`);
+
     try {
+      checkIfTokenIsValid(prop);
+
       return jwt.verify(prop.accessToken, Constants.ACCESS_TOKEN_SECRET as string) as TokenData;
     } catch (error) {
       if (type === 'strict') {
-        if (error instanceof TokenExpiredError) {
-          throw new Errors.TokenExpiredError({ messages: 'Access token expired' });
-        }
-
         throw error;
       }
 
@@ -105,25 +110,33 @@ export function getTokenData(
   }
 }
 
-export function checkIfTokenExpired(req: TokenDataRequest): void {
+export function checkIfTokenIsValid(req: TokenDataRequest): void {
   if ('accessToken' in req) {
+    logger.info(`[TOKEN] Check access token is valid`);
+
     try {
       jwt.verify(req.accessToken, Constants.ACCESS_TOKEN_SECRET as string);
     } catch (error) {
       if (error instanceof TokenExpiredError) {
+        logger.error(`[TOKEN] Access token is expired`);
         throw new Errors.TokenExpiredError({ messages: 'Access token expired' });
       }
 
+      logger.error(`[TOKEN] Access token is invalid`);
       throw new Errors.TokenInvalidError({ messages: 'Invalid token' });
     }
   } else {
+    logger.info(`[TOKEN] Check refresh token is valid`);
+
     try {
       jwt.verify(req.refreshToken, Constants.REFRESH_TOKEN_SECRET as string);
     } catch (error) {
       if (error instanceof TokenExpiredError) {
+        logger.error(`[TOKEN] Refresh token is expired`);
         throw new Errors.RefreshTokenExpiredError({ messages: 'Refresh token expired' });
       }
 
+      logger.error(`[TOKEN] Refresh token is invalid`);
       throw new Errors.TokenInvalidError({ messages: 'Invalid token' });
     }
   }
