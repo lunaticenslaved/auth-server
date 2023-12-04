@@ -81,12 +81,19 @@ export function getTokenData(
   type?: 'strict',
 ): TokenData | Partial<TokenData> {
   if ('refreshToken' in prop) {
-    logger.info(`[TOKEN] Get refresh token data`);
+    logger.info(`[TOKEN] Try to get refresh token data`);
 
     try {
       checkIfTokenIsValid(prop);
 
-      return jwt.verify(prop.refreshToken, Constants.REFRESH_TOKEN_SECRET as string) as TokenData;
+      const data = jwt.verify(
+        prop.refreshToken,
+        Constants.REFRESH_TOKEN_SECRET as string,
+      ) as TokenData;
+
+      logger.info(`[TOKEN] Refresh token data:\n   ${JSON.stringify(data, null, 2)}`);
+
+      return data;
     } catch (error) {
       if (type === 'strict') {
         throw error;
@@ -95,12 +102,19 @@ export function getTokenData(
       return {};
     }
   } else {
-    logger.info(`[TOKEN] Get access token data`);
-
     try {
+      logger.info(`[TOKEN] Try to get access token data`);
+
       checkIfTokenIsValid(prop);
 
-      return jwt.verify(prop.accessToken, Constants.ACCESS_TOKEN_SECRET as string) as TokenData;
+      const data = jwt.verify(
+        prop.accessToken,
+        Constants.ACCESS_TOKEN_SECRET as string,
+      ) as TokenData;
+
+      logger.info(`[TOKEN] Access token data:\n   ${JSON.stringify(data, null, 2)}`);
+
+      return data;
     } catch (error) {
       if (type === 'strict') {
         throw error;

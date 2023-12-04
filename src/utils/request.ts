@@ -33,7 +33,7 @@ export function getUserId(req: Request, type?: 'strict'): string | undefined {
 
   if (!accessToken) return undefined;
 
-  const { userId } = getTokenData({ accessToken }, 'strict');
+  const { userId } = getTokenData({ accessToken }, type);
 
   return userId;
 }
