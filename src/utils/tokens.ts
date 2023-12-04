@@ -51,7 +51,14 @@ export function setTokensToResponse(tokens: Tokens, res: Response) {
   res.cookie('accessToken', tokens.accessToken, { httpOnly: true, secure: true, domain: DOMAIN });
 }
 
-export function createTokens(data: TokenData) {
+export interface CreateTokensResponse {
+  accessToken: string;
+  refreshToken: string;
+  accessTokenExpiresAt: string;
+  refreshTokenExpiresAt: string;
+}
+
+export function createTokens(data: TokenData): CreateTokensResponse {
   const accessToken = jwt.sign(data, Constants.ACCESS_TOKEN_SECRET, {
     expiresIn: Constants.ACCESS_TOKEN_EXPIRES_IN,
   });
@@ -59,7 +66,15 @@ export function createTokens(data: TokenData) {
     expiresIn: Constants.REFRESH_TOKEN_EXPIRES_IN,
   });
 
-  return { accessToken, refreshToken };
+  const { exp: accessExp } = jwt.decode(accessToken) as { exp: number };
+  const { exp: refreshExp } = jwt.decode(refreshToken) as { exp: number };
+
+  return {
+    accessToken,
+    refreshToken,
+    accessTokenExpiresAt: new Date(accessExp * 1000).toISOString(),
+    refreshTokenExpiresAt: new Date(refreshExp * 1000).toISOString(),
+  };
 }
 
 type TokenDataRequest =

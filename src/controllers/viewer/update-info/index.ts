@@ -12,14 +12,16 @@ export type UpdateInfoResponse = {
   user: User;
 };
 
-export const updateInfo = createOperation(async (request, _, context) => {
-  const { user } = await action(
-    {
-      userId: RequestUtils.getUserId(request, 'strict'),
-      login: request.body.login,
-    },
-    context,
-  );
+export const updateInfo = createOperation<UpdateInfoResponse, UpdateInfoRequest>(
+  async (request, _, context) => {
+    const { user } = await action(
+      {
+        userId: RequestUtils.getUserId(request, 'strict'),
+        login: request.body.login,
+      },
+      context,
+    );
 
-  return { user };
-});
+    return { user };
+  },
+);

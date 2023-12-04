@@ -7,10 +7,10 @@ export async function logRequest(request: Request, _: Response, next: NextFuncti
 
   logger.info(
     `[MIDDLEWARE] Log request:
-        - method: ${request.method}
-        - userId: ${userId || '-'}
-        - url: ${request.originalUrl}
-        - headers: ${JSON.stringify(request.headers, null, 2)}`,
+  - method: ${request.method}
+  - userId: ${userId || '-'}
+  - url: ${request.originalUrl}
+  - headers: ${JSON.stringify(request.headers, null, 2)}`,
   );
 
   next();

@@ -2,16 +2,18 @@ import { Request, Response } from 'express';
 
 import { Errors, Models } from '@lunaticenslaved/schema';
 
-export type CreateOperationArg<TResponse, TContext> = (
-  request: Request,
+export type CreateOperationArg<TResponse, TRequest, TContext> = (
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
+  request: Request<any, any, TRequest>,
   response: Response<Models.OperationResponse<TResponse | null>>,
   context: TContext,
 ) => Promise<TResponse> | TResponse;
 
 export function createOperationWithContext<TContext>(context: TContext) {
-  return <TResponse>(fn: CreateOperationArg<TResponse, TContext>) => {
+  return <TResponse, TRequest>(fn: CreateOperationArg<TResponse, TRequest, TContext>) => {
     return async (
-      request: Request,
+      // eslint-disable-next-line @typescript-eslint/no-explicit-any
+      request: Request<any, any, TRequest>,
       response: Response<Models.OperationResponse<TResponse | null>>,
     ) => {
       try {

@@ -1,9 +1,11 @@
+import { SignUpRequest, SignUpResponse } from '@lunaticenslaved/schema/actions';
+
 import { createOperation } from '#/context';
 import { RequestUtils, TokensUtils } from '#/utils';
 
 import { signUp as action } from './action';
 
-export const signUp = createOperation(async (req, res, context) => {
+export const signUp = createOperation<SignUpResponse, SignUpRequest>(async (req, res, context) => {
   const { body } = req;
   const userAgent = RequestUtils.getUserAgent(req);
 
@@ -11,5 +13,9 @@ export const signUp = createOperation(async (req, res, context) => {
 
   TokensUtils.setTokensToResponse(tokens, res);
 
-  return { user, token: tokens.accessToken };
+  return {
+    user,
+    token: tokens.accessToken,
+    tokenExpiresAt: tokens.accessTokenExpiresAt,
+  };
 });

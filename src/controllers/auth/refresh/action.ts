@@ -2,6 +2,7 @@ import { Context } from '#/context';
 import { createUserNotFoundError } from '#/errors';
 import { User } from '#/models';
 import { TokensUtils } from '#/utils';
+import { CreateTokensResponse } from '#/utils/tokens';
 
 type Request = {
   userId: string;
@@ -9,9 +10,7 @@ type Request = {
   userAgent: string;
 };
 
-type Response = {
-  accessToken: string;
-  refreshToken: string;
+type Response = CreateTokensResponse & {
   user: User;
 };
 

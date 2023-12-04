@@ -5,7 +5,7 @@ import { RequestUtils, TokensUtils } from '#/utils';
 
 import { refresh as action } from './action';
 
-export const refresh = createOperation<RefreshResponse>(async (req, res, context) => {
+export const refresh = createOperation<RefreshResponse, void>(async (req, res, context) => {
   const { refreshToken } = TokensUtils.getTokens(req, 'strict');
 
   TokensUtils.checkIfTokenIsValid({ refreshToken });
@@ -23,5 +23,9 @@ export const refresh = createOperation<RefreshResponse>(async (req, res, context
 
   TokensUtils.setTokensToResponse(tokens, res);
 
-  return { user, token: tokens.accessToken };
+  return {
+    user,
+    token: tokens.accessToken,
+    tokenExpiresAt: tokens.accessTokenExpiresAt,
+  };
 });

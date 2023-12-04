@@ -5,6 +5,7 @@ import schema from '@lunaticenslaved/schema';
 import { Context } from '#/context';
 import { User } from '#/models';
 import { TokensUtils } from '#/utils';
+import { CreateTokensResponse } from '#/utils/tokens';
 
 import { createInvalidPasswordError, createUserWithLoginNotExistsError } from './errors';
 
@@ -15,10 +16,8 @@ type Request = {
   sessionId?: string;
 };
 
-type Response = {
+type Response = CreateTokensResponse & {
   user: User;
-  accessToken: string;
-  refreshToken: string;
 };
 
 export const signIn = async (request: Request, context: Context): Promise<Response> => {

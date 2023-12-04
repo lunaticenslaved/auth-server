@@ -4,6 +4,6 @@ import { get } from './get';
 import { list } from './list';
 
 export const addUsersRoutes = createRoutes(app => {
-  app.get('/api/users/:userId', get);
-  app.get('/api/users', list);
+  app.post('/api/users/get', get);
+  app.post('/api/users/list', list);
 });

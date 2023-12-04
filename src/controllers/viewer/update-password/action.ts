@@ -1,12 +1,12 @@
 import bcrypt from 'bcrypt';
 
 import { Validation, Validators } from '@lunaticenslaved/schema';
+import { UpdatePasswordRequest, UpdatePasswordResponse } from '@lunaticenslaved/schema/actions';
 
 import { Context } from '#/context';
 import { createHash } from '#/utils';
 
 import { createIncorrectPasswordError, createSamePasswordError } from './errors';
-import { UpdatePasswordRequest, UpdatePasswordResponse } from './types';
 
 type Request = UpdatePasswordRequest & {
   userId: string;
@@ -20,9 +20,9 @@ const validators = {
 };
 
 export async function updatePassword(request: Request, context: Context): Promise<Response> {
-  const { userId } = request;
+  const { userId, ...data } = request;
 
-  await Validation.validate(validators, request);
+  await Validation.validate(validators, data);
 
   const { password: savedPassword } = await context.prisma.user.findFirstOrThrow({
     where: { id: userId },

@@ -1,11 +1,12 @@
+import { SignInRequest, SignInResponse } from '@lunaticenslaved/schema/actions';
+
 import { createOperation } from '#/context';
 import { RequestUtils, TokensUtils } from '#/utils';
 
 import { signIn as action } from './action';
 
-export const signIn = createOperation(async (req, res, context) => {
-  const login = req.body.login as string;
-  const password = req.body.password as string;
+export const signIn = createOperation<SignInResponse, SignInRequest>(async (req, res, context) => {
+  const { login, password } = req.body;
   const userAgent = RequestUtils.getUserAgent(req);
   const sessionId = RequestUtils.getSessionId(req);
 
@@ -21,5 +22,9 @@ export const signIn = createOperation(async (req, res, context) => {
 
   TokensUtils.setTokensToResponse(tokens, res);
 
-  return { user, token: tokens.accessToken };
+  return {
+    user,
+    token: tokens.accessToken,
+    tokenExpiresAt: new Date(tokens.accessTokenExpiresAt).toISOString(),
+  };
 });

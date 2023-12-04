@@ -3,6 +3,7 @@ import schema from '@lunaticenslaved/schema';
 import { Context } from '#/context';
 import { User } from '#/models';
 import { TokensUtils, createHash } from '#/utils';
+import { CreateTokensResponse } from '#/utils/tokens';
 
 import { createUserWithEmailExistsError, createUserWithLoginExistsError } from './errors';
 
@@ -13,10 +14,8 @@ export type Request = {
   userAgent: string;
 };
 
-export type Response = {
+export type Response = CreateTokensResponse & {
   user: User;
-  accessToken: string;
-  refreshToken: string;
 };
 
 export async function signUp(data: Request, context: Context): Promise<Response> {

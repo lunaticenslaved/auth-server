@@ -13,5 +13,5 @@ export const addAuthRoutes = createRoutes(app => {
   app.post('/api/auth/logout', logout);
   app.post('/api/auth/refresh', refresh);
   app.post('/api/auth/resend-email', resendEmail);
-  app.post('/api/auth/*', activate);
+  app.post('/api/auth/activate', activate);
 });

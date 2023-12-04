@@ -1,19 +1,14 @@
+import { ActivateRequest, ActivateResponse } from '@lunaticenslaved/schema/actions';
+
 import { createOperation } from '#/context';
-import { User } from '#/models';
 
-interface ActivateRequestBody {
-  activationToken: string;
-}
+export const activate = createOperation<ActivateResponse, ActivateRequest>(
+  async (req, _, context) => {
+    const { activationToken } = req.body;
 
-interface ActivateResponse {
-  user: User;
-}
+    const userId = context.service.mail.getUserIdFromActivationToken(activationToken);
+    const user = await context.service.user.activate({ userId });
 
-export const activate = createOperation<ActivateResponse>(async (req, _, context) => {
-  const { activationToken } = req.body as ActivateRequestBody;
-
-  const userId = context.service.mail.getUserIdFromActivationToken(activationToken);
-  const user = await context.service.user.activate({ userId });
-
-  return { user };
-});
+    return { user };
+  },
+);
