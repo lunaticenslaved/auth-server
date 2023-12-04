@@ -5,44 +5,60 @@ import schema from '@lunaticenslaved/schema';
 import { Context } from '#/context';
 import { User } from '#/models';
 import { TokensUtils } from '#/utils';
-import { CreateTokensResponse } from '#/utils/tokens';
+import { CreateAccessTokenResponse, CreateRefreshTokenResponse } from '#/utils/tokens';
 
-import { createInvalidPasswordError, createUserWithLoginNotExistsError } from './errors';
+import { createInvalidPasswordError } from './errors';
 
 type Request = {
   login: string;
   password: string;
   userAgent: string;
-  sessionId?: string;
+  fingerprint: string;
+  ip: string;
 };
 
-type Response = CreateTokensResponse & {
+type Response = {
   user: User;
+  accessToken: CreateAccessTokenResponse;
+  refreshToken: CreateRefreshTokenResponse;
 };
 
 export const signIn = async (request: Request, context: Context): Promise<Response> => {
-  const { sessionId, userAgent } = request;
+  const { login, password, ...restData } = request;
 
-  if (sessionId) {
-    await context.service.session.delete({ sessionId });
-  }
-
+  // validate input
   await schema.Validation.validate(schema.validators.auth.signIn, request);
 
-  const user = await context.service.user.get({ login: request.login }, 'strict');
+  // check login and password
+  const user = await context.service.user.get({ login }, 'strict');
   const savedPassword = await context.service.user.getPassword({ userId: user.id });
-
-  // TODO move errors to all
-  if (!user) {
-    throw createUserWithLoginNotExistsError(request.login);
-  }
-
-  if (!(await bcrypt.compare(request.password, savedPassword))) {
+  if (!(await bcrypt.compare(password, savedPassword))) {
     throw createInvalidPasswordError();
   }
 
-  const session = await context.service.session.save({ userAgent, userId: user.id });
-  const tokens = TokensUtils.createTokens({ userId: user.id, sessionId: session.id });
+  // remove session with the same fingerprint
+  const currentSession = await context.service.session.get({
+    userId: user.id,
+    fingerprint: request.fingerprint,
+  });
+  if (currentSession) {
+    await context.service.session.delete({ sessionId: currentSession.id });
+  }
 
-  return { ...tokens, user };
+  // save session
+  const refreshToken = TokensUtils.createRefreshToken({ userId: user.id });
+  const session = await context.service.session.save({
+    ...restData,
+    userId: user.id,
+    refreshToken: refreshToken.token,
+    expiresAt: refreshToken.expiresAt,
+  });
+
+  // create access token
+  const accessToken = TokensUtils.createAccessToken({
+    userId: user.id,
+    sessionId: session.id,
+  });
+
+  return { refreshToken, accessToken, user };
 };

@@ -14,16 +14,14 @@ export function getUserAgent({ headers }: Request) {
   return userAgent;
 }
 
-export function getSessionId(req: Request): string | undefined;
-export function getSessionId(req: Request, type: 'strict'): string;
-export function getSessionId(req: Request, type?: 'strict'): string | undefined {
-  const { accessToken } = getTokens(req, type);
+export function getIP({ headers }: Request) {
+  const ip = headers['x-real-ip'];
 
-  if (!accessToken) return undefined;
+  if (!ip) {
+    throw new Errors.ValidationError({ messages: [`Unknown ip`] });
+  }
 
-  const { sessionId } = getTokenData({ accessToken }, type);
-
-  return sessionId;
+  return ip as string;
 }
 
 export function getUserId(req: Request): string | undefined;

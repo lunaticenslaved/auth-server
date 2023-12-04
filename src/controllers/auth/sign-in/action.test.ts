@@ -12,6 +12,8 @@ describe('test validation', () => {
         userAgent: 'chrome',
         login: 'user',
         password: '',
+        ip: '',
+        fingerprint: '',
       },
       Mock.context,
     );
@@ -25,6 +27,8 @@ describe('test validation', () => {
         userAgent: 'chrome',
         login: '',
         password: 'user',
+        ip: '',
+        fingerprint: '',
       },
       Mock.context,
     );
@@ -39,6 +43,8 @@ test('user should exit', async () => {
       userAgent: 'chrome',
       login: 'login',
       password: 'password',
+      ip: '',
+      fingerprint: '',
     },
     Mock.context,
   );
@@ -52,6 +58,8 @@ test('check invalid password', async () => {
     login: 'login',
     email: 'test@test.ru',
     password: 'password',
+    fingerprint: 'fingerprint',
+    ip: 'ip',
   };
 
   await Mock.utils.createUser(data);
@@ -60,6 +68,8 @@ test('check invalid password', async () => {
     {
       ...data,
       password: 'invalid password',
+      ip: '',
+      fingerprint: '',
     },
     Mock.context,
   );

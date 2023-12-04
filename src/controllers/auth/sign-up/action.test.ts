@@ -13,6 +13,8 @@ describe('test validation', () => {
         login: 'user',
         email: 'test@test.ru',
         password: '',
+        fingerprint: '',
+        ip: '',
       },
       Mock.context,
     );
@@ -27,6 +29,8 @@ describe('test validation', () => {
         email: 'test@test.ru',
         login: '',
         password: 'user',
+        fingerprint: '',
+        ip: '',
       },
       Mock.context,
     );
@@ -41,6 +45,8 @@ describe('test validation', () => {
         email: '',
         login: 'login',
         password: 'user',
+        fingerprint: '',
+        ip: '',
       },
       Mock.context,
     );
@@ -54,6 +60,8 @@ describe('test validation', () => {
       email: 'test@test.ru',
       login: 'login',
       password: 'password',
+      fingerprint: '',
+      ip: '',
     };
 
     await Mock.utils.createUser(data);
@@ -70,6 +78,8 @@ describe('test validation', () => {
       email: 'test@test.ru',
       login: 'login',
       password: 'password',
+      fingerprint: '',
+      ip: '',
     };
 
     await Mock.utils.createUser(data);
@@ -88,6 +98,8 @@ test('can sign up', async () => {
       email: 'test@test.ru',
       login: 'login',
       password: 'password',
+      fingerprint: '',
+      ip: '',
     },
     Mock.context,
   );
@@ -102,6 +114,8 @@ test('activation letter has been send', async () => {
       email: 'test@test.ru',
       login: 'login',
       password: 'password',
+      fingerprint: '',
+      ip: '',
     },
     Mock.context,
   );

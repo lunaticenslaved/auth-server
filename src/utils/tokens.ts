@@ -9,7 +9,7 @@ import { DOMAIN } from '#/utils/constants';
 
 type TokenData = {
   userId: string;
-  sessionId: string;
+  fingerprint: string;
 };
 
 type Tokens = {
@@ -19,7 +19,6 @@ type Tokens = {
 
 export function removeTokensFormResponse(res: Response) {
   res.clearCookie('refreshToken');
-  res.clearCookie('accessToken');
 }
 
 export function getTokens(req: Request): Partial<Tokens>;
@@ -46,35 +45,13 @@ export function getTokens(req: Request, type?: 'strict' | undefined): Partial<To
   return { accessToken, refreshToken };
 }
 
-export function setTokensToResponse(tokens: Tokens, res: Response) {
-  res.cookie('refreshToken', tokens.refreshToken, { httpOnly: true, secure: true, domain: DOMAIN });
-  res.cookie('accessToken', tokens.accessToken, { httpOnly: true, secure: true, domain: DOMAIN });
-}
-
-export interface CreateTokensResponse {
-  accessToken: string;
-  refreshToken: string;
-  accessTokenExpiresAt: string;
-  refreshTokenExpiresAt: string;
-}
-
-export function createTokens(data: TokenData): CreateTokensResponse {
-  const accessToken = jwt.sign(data, Constants.ACCESS_TOKEN_SECRET, {
-    expiresIn: Constants.ACCESS_TOKEN_EXPIRES_IN,
+export function setTokensToResponse(refreshToken: CreateRefreshTokenResponse, res: Response) {
+  res.cookie('refreshToken', refreshToken.token, {
+    httpOnly: true,
+    secure: true,
+    domain: DOMAIN,
+    expires: refreshToken.expiresAt,
   });
-  const refreshToken = jwt.sign(data, Constants.REFRESH_TOKEN_SECRET, {
-    expiresIn: Constants.REFRESH_TOKEN_EXPIRES_IN,
-  });
-
-  const { exp: accessExp } = jwt.decode(accessToken) as { exp: number };
-  const { exp: refreshExp } = jwt.decode(refreshToken) as { exp: number };
-
-  return {
-    accessToken,
-    refreshToken,
-    accessTokenExpiresAt: new Date(accessExp * 1000).toISOString(),
-    refreshTokenExpiresAt: new Date(refreshExp * 1000).toISOString(),
-  };
 }
 
 type TokenDataRequest =
@@ -170,4 +147,83 @@ export function checkIfTokenIsValid(req: TokenDataRequest): void {
       throw new Errors.TokenInvalidError({ messages: 'Invalid token' });
     }
   }
+}
+
+interface RefreshTokenData {
+  userId: string;
+}
+
+export interface CreateRefreshTokenResponse {
+  token: string;
+  expiresAt: Date;
+}
+
+export function createRefreshToken(data: RefreshTokenData): CreateRefreshTokenResponse {
+  const token = jwt.sign(data, Constants.REFRESH_TOKEN_SECRET, {
+    expiresIn: Constants.REFRESH_TOKEN_EXPIRES_IN,
+  });
+
+  const { exp } = jwt.decode(token) as { exp: number };
+
+  return {
+    token,
+    expiresAt: new Date(exp * 1000),
+  };
+}
+
+interface AccessTokenData {
+  userId: string;
+  sessionId: string;
+}
+
+export interface CreateAccessTokenResponse {
+  token: string;
+  expiresAt: Date;
+}
+
+export function createAccessToken(data: AccessTokenData): CreateAccessTokenResponse {
+  const token = jwt.sign(data, Constants.ACCESS_TOKEN_SECRET, {
+    expiresIn: Constants.ACCESS_TOKEN_EXPIRES_IN,
+  });
+
+  const { exp } = jwt.decode(token) as { exp: number };
+
+  return {
+    token,
+    expiresAt: new Date(exp * 1000),
+  };
+}
+
+export function getAccessTokenData(token: string, type: 'strict'): AccessTokenData;
+export function getAccessTokenData(token: string): AccessTokenData | undefined;
+export function getAccessTokenData(token: string, type?: 'strict'): AccessTokenData | undefined {
+  try {
+    logger.info(`[TOKEN] Try to get access token data`);
+
+    checkIfTokenIsValid({ accessToken: token });
+
+    const data = jwt.verify(token, Constants.ACCESS_TOKEN_SECRET as string) as AccessTokenData;
+
+    logger.info(`[TOKEN] Access token data:\n   ${JSON.stringify(data, null, 2)}`);
+
+    return data;
+  } catch (error) {
+    if (type === 'strict') {
+      throw error;
+    }
+
+    return undefined;
+  }
+}
+
+export function getRefreshToken(req: Request, type: 'strict'): string;
+export function getRefreshToken(req: Request): string | undefined;
+export function getRefreshToken(req: Request, type?: 'strict'): string | undefined {
+  const token = req.cookies['refreshToken'] as string;
+
+  if (type === 'strict') {
+    throw new Errors.UnauthorizedError({ messages: 'Unknown token' });
+  }
+
+  return token;
 }

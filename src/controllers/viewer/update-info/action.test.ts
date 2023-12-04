@@ -10,6 +10,8 @@ test('login is required', async () => {
     userAgent: 'chrome',
     login: 'login',
     password: 'password',
+    fingerprint: 'fingerprint',
+    ip: 'ip',
   });
 
   const promise = updateInfo(
@@ -29,6 +31,8 @@ test('can change login', async () => {
     userAgent: 'chrome',
     login: 'login',
     password: 'password',
+    fingerprint: 'fingerprint',
+    ip: 'ip',
   });
 
   const { user: newUser } = await updateInfo(

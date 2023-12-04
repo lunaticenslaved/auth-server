@@ -3,7 +3,7 @@ import schema from '@lunaticenslaved/schema';
 import { Context } from '#/context';
 import { User } from '#/models';
 import { TokensUtils, createHash } from '#/utils';
-import { CreateTokensResponse } from '#/utils/tokens';
+import { CreateAccessTokenResponse, CreateRefreshTokenResponse } from '#/utils/tokens';
 
 import { createUserWithEmailExistsError, createUserWithLoginExistsError } from './errors';
 
@@ -12,15 +12,21 @@ export type Request = {
   email: string;
   password: string;
   userAgent: string;
+  fingerprint: string;
+  ip: string;
 };
 
-export type Response = CreateTokensResponse & {
+export type Response = {
   user: User;
+  accessToken: CreateAccessTokenResponse;
+  refreshToken: CreateRefreshTokenResponse;
 };
 
 export async function signUp(data: Request, context: Context): Promise<Response> {
+  // validate input
   await schema.Validation.validate(schema.validators.auth.signIn, data);
 
+  // check if login and email unique
   const userWithLogin = await context.service.user.get({ login: data.login });
   const userWithEmail = await context.service.user.get({ email: data.email });
 
@@ -32,20 +38,23 @@ export async function signUp(data: Request, context: Context): Promise<Response>
     throw createUserWithEmailExistsError(data.email);
   }
 
+  // create user
   const hashedPassword = await createHash(data.password);
   const createdUser = await context.service.user.create({
     login: data.login,
     email: data.email,
     password: hashedPassword,
   });
+
+  // save session
+  const refreshToken = TokensUtils.createRefreshToken({ userId: createdUser.id });
   const session = await context.service.session.save({
     userAgent: data.userAgent,
     userId: createdUser.id,
-  });
-
-  const tokens = TokensUtils.createTokens({
-    userId: createdUser.id,
-    sessionId: session.id,
+    fingerprint: data.fingerprint,
+    ip: data.ip,
+    refreshToken: refreshToken.token,
+    expiresAt: refreshToken.expiresAt,
   });
 
   context.service.mail.sendUserActivationMail({
@@ -53,5 +62,11 @@ export async function signUp(data: Request, context: Context): Promise<Response>
     userId: createdUser.id,
   });
 
-  return { ...tokens, user: createdUser };
+  // create access token
+  const accessToken = TokensUtils.createAccessToken({
+    userId: createdUser.id,
+    sessionId: session.id,
+  });
+
+  return { refreshToken, accessToken, user: createdUser };
 }

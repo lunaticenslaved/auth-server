@@ -6,25 +6,26 @@ import { RequestUtils, TokensUtils } from '#/utils';
 import { signIn as action } from './action';
 
 export const signIn = createOperation<SignInResponse, SignInRequest>(async (req, res, context) => {
-  const { login, password } = req.body;
+  const { login, password, fingerprint } = req.body;
   const userAgent = RequestUtils.getUserAgent(req);
-  const sessionId = RequestUtils.getSessionId(req);
+  const ip = RequestUtils.getIP(req);
 
-  const { user, ...tokens } = await action(
+  const { user, refreshToken, accessToken } = await action(
     {
       login,
       password,
       userAgent,
-      sessionId,
+      fingerprint,
+      ip,
     },
     context,
   );
 
-  TokensUtils.setTokensToResponse(tokens, res);
+  TokensUtils.setTokensToResponse(refreshToken, res);
 
   return {
     user,
-    token: tokens.accessToken,
-    expiresAt: new Date(tokens.accessTokenExpiresAt).toISOString(),
+    token: accessToken.token,
+    expiresAt: accessToken.expiresAt.toISOString(),
   };
 });

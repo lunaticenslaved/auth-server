@@ -1,14 +1,16 @@
 import { createOperation } from '#/context';
-import { RequestUtils, TokensUtils } from '#/utils';
-
-import { logout as action } from './action';
+import { TokensUtils } from '#/utils';
 
 export const logout = createOperation(async (request, response, context) => {
-  const sessionId = RequestUtils.getSessionId(request);
+  const refreshToken = TokensUtils.getRefreshToken(request);
+
+  if (!refreshToken) return;
+
+  const session = await context.service.session.get({ refreshToken });
+
+  if (!session) return;
+
+  await context.service.session.delete({ sessionId: session.id });
 
   TokensUtils.removeTokensFormResponse(response);
-
-  if (!sessionId) return;
-
-  await action({ sessionId }, context);
 });

@@ -10,6 +10,8 @@ const data = {
   email: 'test@test.ru',
   login: 'login',
   password: 'password',
+  fingerprint: 'fingerprint',
+  ip: 'ip',
 };
 
 describe('validation works', () => {

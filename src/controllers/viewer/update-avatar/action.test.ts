@@ -10,6 +10,8 @@ test('can upload file', async () => {
     login: 'login',
     password: 'password',
     userAgent: 'chrome',
+    fingerprint: 'fingerprint',
+    ip: 'ip',
   });
 
   await updateAvatar(

@@ -4,6 +4,10 @@ export type SaveSessionResponse = Session;
 export interface SaveSessionRequest {
   userId: string;
   userAgent: string;
+  fingerprint: string;
+  ip: string;
+  expiresAt: Date;
+  refreshToken: string;
   sessionId?: string;
 }
 
@@ -13,6 +17,20 @@ export interface DeleteSessionRequest {
 }
 
 export type GetSessionResponse = Session;
-export interface GetSessionRequest {
-  sessionId: string;
+export type GetSessionRequest =
+  | {
+      sessionId: string;
+    }
+  | {
+      refreshToken: string;
+    }
+  | {
+      userId: string;
+      fingerprint: string;
+    };
+
+export type CheckSessionResponse = 'not-exists' | 'expired' | 'valid' | 'unknown-fingerprint';
+export interface CheckSessionRequest {
+  refreshToken: string;
+  fingerprint: string;
 }

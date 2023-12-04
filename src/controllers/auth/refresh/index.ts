@@ -1,31 +1,60 @@
-import { RefreshResponse } from '@lunaticenslaved/schema/actions';
+import { RefreshRequest, RefreshResponse } from '@lunaticenslaved/schema/actions';
 
 import { createOperation } from '#/context';
 import { RequestUtils, TokensUtils } from '#/utils';
 
-import { refresh as action } from './action';
+export const refresh = createOperation<RefreshResponse, RefreshRequest>(
+  async (req, res, context) => {
+    const { fingerprint } = req.body;
+    const refreshToken = TokensUtils.getRefreshToken(req, 'strict');
+    const session = await context.service.session.get({
+      refreshToken,
+    });
 
-export const refresh = createOperation<RefreshResponse, void>(async (req, res, context) => {
-  const { refreshToken } = TokensUtils.getTokens(req, 'strict');
+    const userAgent = RequestUtils.getUserAgent(req);
+    const ip = RequestUtils.getIP(req);
 
-  TokensUtils.checkIfTokenIsValid({ refreshToken });
+    if (!session) {
+      throw new Error('Session not exists');
+    }
 
-  const { sessionId, userId } = TokensUtils.getTokenData({ refreshToken }, 'strict');
+    const sessionState = await context.service.session.checkSession({
+      refreshToken,
+      fingerprint,
+    });
 
-  const { user, ...tokens } = await action(
-    {
-      sessionId,
-      userId,
-      userAgent: RequestUtils.getUserAgent(req),
-    },
-    context,
-  );
+    if (sessionState === 'expired') {
+      throw new Error('Session expired');
+    } else if (sessionState === 'not-exists') {
+      throw new Error('Session not exists');
+    } else if (sessionState === 'unknown-fingerprint') {
+      throw new Error('Unknown fingerprint');
+    }
 
-  TokensUtils.setTokensToResponse(tokens, res);
+    // update session with new refresh token
+    const newRefreshToken = TokensUtils.createRefreshToken({ userId: session.userId });
+    const newSession = await context.service.session.save({
+      ip,
+      userAgent,
+      sessionId: session.id,
+      fingerprint: session.fingerprint,
+      refreshToken: newRefreshToken.token,
+      expiresAt: newRefreshToken.expiresAt,
+      userId: session.userId,
+    });
 
-  return {
-    user,
-    token: tokens.accessToken,
-    expiresAt: tokens.accessTokenExpiresAt,
-  };
-});
+    // create access token
+    const accessToken = TokensUtils.createAccessToken({
+      userId: newSession.userId,
+      sessionId: newSession.id,
+    });
+
+    TokensUtils.setTokensToResponse(newRefreshToken, res);
+
+    return {
+      user: await context.service.user.get({ userId: session.userId }, 'strict'),
+      token: accessToken.token,
+      expiresAt: accessToken.expiresAt.toISOString(),
+    };
+  },
+);
