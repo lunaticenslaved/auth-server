@@ -7,42 +7,8 @@ import { Errors } from '@lunaticenslaved/schema';
 import { Constants, logger } from '#/utils';
 import { DOMAIN } from '#/utils/constants';
 
-type TokenData = {
-  userId: string;
-  fingerprint: string;
-};
-
-type Tokens = {
-  accessToken: string;
-  refreshToken: string;
-};
-
 export function removeTokensFormResponse(res: Response) {
   res.clearCookie('refreshToken');
-}
-
-export function getTokens(req: Request): Partial<Tokens>;
-export function getTokens(req: Request, type: 'strict'): Tokens;
-export function getTokens(req: Request, type?: 'strict'): Partial<Tokens> | Tokens;
-export function getTokens(req: Request, type?: 'strict' | undefined): Partial<Tokens> | Tokens {
-  let accessToken = req.headers['authorization']?.split(' ')[1];
-
-  if (!accessToken) {
-    accessToken = req.cookies['accessToken'] as string | undefined;
-  }
-
-  const refreshToken = req.cookies['refreshToken'] as string | undefined;
-
-  logger.info(
-    `[TOKEN] Get tokens from request: access - ${!!accessToken}, refresh - ${!!refreshToken}`,
-  );
-
-  if ((!accessToken || !refreshToken) && type === 'strict') {
-    logger.error(`[TOKEN] Get tokens from request: strict tokens not valid`);
-    throw new Errors.TokenInvalidError({ messages: 'Tokens are not valid' });
-  }
-
-  return { accessToken, refreshToken };
 }
 
 export function setTokensToResponse(refreshToken: CreateRefreshTokenResponse, res: Response) {
@@ -61,61 +27,6 @@ type TokenDataRequest =
   | {
       accessToken: string;
     };
-
-export function getTokenData(prop: TokenDataRequest): TokenData | Partial<TokenData>;
-export function getTokenData(prop: TokenDataRequest, type: 'strict'): TokenData;
-export function getTokenData(
-  prop: TokenDataRequest,
-  type?: 'strict',
-): TokenData | Partial<TokenData>;
-export function getTokenData(
-  prop: TokenDataRequest,
-  type?: 'strict',
-): TokenData | Partial<TokenData> {
-  if ('refreshToken' in prop) {
-    logger.info(`[TOKEN] Try to get refresh token data`);
-
-    try {
-      checkIfTokenIsValid(prop);
-
-      const data = jwt.verify(
-        prop.refreshToken,
-        Constants.REFRESH_TOKEN_SECRET as string,
-      ) as TokenData;
-
-      logger.info(`[TOKEN] Refresh token data:\n   ${JSON.stringify(data, null, 2)}`);
-
-      return data;
-    } catch (error) {
-      if (type === 'strict') {
-        throw error;
-      }
-
-      return {};
-    }
-  } else {
-    try {
-      logger.info(`[TOKEN] Try to get access token data`);
-
-      checkIfTokenIsValid(prop);
-
-      const data = jwt.verify(
-        prop.accessToken,
-        Constants.ACCESS_TOKEN_SECRET as string,
-      ) as TokenData;
-
-      logger.info(`[TOKEN] Access token data:\n   ${JSON.stringify(data, null, 2)}`);
-
-      return data;
-    } catch (error) {
-      if (type === 'strict') {
-        throw error;
-      }
-
-      return {};
-    }
-  }
-}
 
 export function checkIfTokenIsValid(req: TokenDataRequest): void {
   if ('accessToken' in req) {
@@ -219,9 +130,29 @@ export function getAccessTokenData(token: string, type?: 'strict'): AccessTokenD
 export function getRefreshToken(req: Request, type: 'strict'): string;
 export function getRefreshToken(req: Request): string | undefined;
 export function getRefreshToken(req: Request, type?: 'strict'): string | undefined {
+  logger.info('[TOKEN] Get refresh token from request');
+
   const token = req.cookies['refreshToken'] as string;
 
   if (type === 'strict') {
+    logger.error('[TOKEN] Refresh token not found in cookie');
+
+    throw new Errors.UnauthorizedError({ messages: 'Unknown token' });
+  }
+
+  return token;
+}
+
+export function getAccessToken(req: Request, type: 'strict'): string;
+export function getAccessToken(req: Request): string | undefined;
+export function getAccessToken(req: Request, type?: 'strict'): string | undefined {
+  logger.info('[TOKEN] Get access token from request');
+
+  const token = req.headers['authorization']?.split(' ')?.[1] as string | undefined;
+
+  if (type === 'strict' && !token) {
+    logger.error('[TOKEN] Access token not found in header');
+
     throw new Errors.UnauthorizedError({ messages: 'Unknown token' });
   }
 

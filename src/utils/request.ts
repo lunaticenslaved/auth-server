@@ -2,7 +2,7 @@ import { Request } from 'express';
 
 import { Errors } from '@lunaticenslaved/schema';
 
-import { getTokenData, getTokens } from './tokens';
+import { getAccessToken, getAccessTokenData } from './tokens';
 
 export function getUserAgent({ headers }: Request) {
   const userAgent = headers['user-agent'];
@@ -27,11 +27,17 @@ export function getIP({ headers }: Request) {
 export function getUserId(req: Request): string | undefined;
 export function getUserId(req: Request, type: 'strict'): string;
 export function getUserId(req: Request, type?: 'strict'): string | undefined {
-  const { accessToken } = getTokens(req, type);
+  if (type === 'strict') {
+    const accessToken = getAccessToken(req, 'strict');
+    const { userId } = getAccessTokenData(accessToken, 'strict');
+    return userId;
+  }
+
+  const accessToken = getAccessToken(req);
 
   if (!accessToken) return undefined;
 
-  const { userId } = getTokenData({ accessToken }, type);
+  const { userId } = getAccessTokenData(accessToken) || {};
 
   return userId;
 }
