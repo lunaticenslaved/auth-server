@@ -26,6 +26,6 @@ export const refresh = createOperation<RefreshResponse, void>(async (req, res, c
   return {
     user,
     token: tokens.accessToken,
-    tokenExpiresAt: tokens.accessTokenExpiresAt,
+    expiresAt: tokens.accessTokenExpiresAt,
   };
 });

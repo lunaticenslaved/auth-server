@@ -25,6 +25,6 @@ export const signIn = createOperation<SignInResponse, SignInRequest>(async (req,
   return {
     user,
     token: tokens.accessToken,
-    tokenExpiresAt: new Date(tokens.accessTokenExpiresAt).toISOString(),
+    expiresAt: new Date(tokens.accessTokenExpiresAt).toISOString(),
   };
 });

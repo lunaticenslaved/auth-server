@@ -16,6 +16,6 @@ export const signUp = createOperation<SignUpResponse, SignUpRequest>(async (req,
   return {
     user,
     token: tokens.accessToken,
-    tokenExpiresAt: tokens.accessTokenExpiresAt,
+    expiresAt: tokens.accessTokenExpiresAt,
   };
 });
