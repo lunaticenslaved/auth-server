@@ -71,14 +71,16 @@ export class SessionService {
   }
 
   // TODO add strict
-  async get(data: GetSessionRequest): Promise<GetSessionResponse> {
+  async get(data: GetSessionRequest, type: 'strict'): Promise<GetSessionResponse>;
+  async get(data: GetSessionRequest): Promise<GetSessionResponse | undefined>;
+  async get(data: GetSessionRequest, type?: 'strict'): Promise<GetSessionResponse | undefined> {
     if ('sessionId' in data) {
       const { sessionId } = data;
       const session = await this.prisma.session.findFirst({
         where: { id: sessionId },
       });
 
-      if (!session) {
+      if (!session && type === 'strict') {
         throw createSessionNotFoundError();
       }
 
@@ -89,7 +91,7 @@ export class SessionService {
         where: { refreshToken },
       });
 
-      if (!session) {
+      if (!session && type === 'strict') {
         throw createSessionNotFoundError();
       }
 
@@ -103,7 +105,7 @@ export class SessionService {
         },
       });
 
-      if (!session) {
+      if (!session && type === 'strict') {
         throw createSessionNotFoundError();
       }
 

@@ -7,16 +7,10 @@ export const refresh = createOperation<RefreshResponse, RefreshRequest>(
   async (req, res, context) => {
     const { fingerprint } = req.body;
     const refreshToken = tokens.refresh.get(req, 'strict');
-    const session = await context.service.session.get({
-      refreshToken,
-    });
+    const session = await context.service.session.get({ refreshToken }, 'strict');
 
     const userAgent = RequestUtils.getUserAgent(req);
     const ip = RequestUtils.getIP(req);
-
-    if (!session) {
-      throw new Error('Session not exists');
-    }
 
     const sessionState = await context.service.session.checkSession({
       refreshToken,
