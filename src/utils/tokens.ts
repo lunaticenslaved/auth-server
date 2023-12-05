@@ -127,6 +127,28 @@ export function getAccessTokenData(token: string, type?: 'strict'): AccessTokenD
   }
 }
 
+export function getRefreshTokenData(token: string, type: 'strict'): RefreshTokenData;
+export function getRefreshTokenData(token: string): RefreshTokenData | undefined;
+export function getRefreshTokenData(token: string, type?: 'strict'): RefreshTokenData | undefined {
+  try {
+    logger.info(`[TOKEN] Try to get refresh token data`);
+
+    checkIfTokenIsValid({ refreshToken: token });
+
+    const data = jwt.verify(token, Constants.REFRESH_TOKEN_SECRET as string) as RefreshTokenData;
+
+    logger.info(`[TOKEN] Refresh token data:\n   ${JSON.stringify(data, null, 2)}`);
+
+    return data;
+  } catch (error) {
+    if (type === 'strict') {
+      throw error;
+    }
+
+    return undefined;
+  }
+}
+
 export function getRefreshToken(req: Request, type: 'strict'): string;
 export function getRefreshToken(req: Request): string | undefined;
 export function getRefreshToken(req: Request, type?: 'strict'): string | undefined {

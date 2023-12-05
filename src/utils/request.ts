@@ -2,7 +2,7 @@ import { Request } from 'express';
 
 import { Errors } from '@lunaticenslaved/schema';
 
-import { getAccessToken, getAccessTokenData } from './tokens';
+import { getAccessToken, getAccessTokenData, getRefreshToken, getRefreshTokenData } from './tokens';
 
 export function getUserAgent({ headers }: Request) {
   const userAgent = headers['user-agent'];
@@ -28,16 +28,39 @@ export function getUserId(req: Request): string | undefined;
 export function getUserId(req: Request, type: 'strict'): string;
 export function getUserId(req: Request, type?: 'strict'): string | undefined {
   if (type === 'strict') {
-    const accessToken = getAccessToken(req, 'strict');
-    const { userId } = getAccessTokenData(accessToken, 'strict');
+    let token = '';
+    let tokenType = 'access';
+
+    try {
+      token = getAccessToken(req, 'strict');
+      tokenType = 'access';
+    } catch {
+      token = getRefreshToken(req, 'strict');
+      tokenType = 'refresh';
+    }
+
+    if (tokenType === 'refresh') {
+      const { userId } = getRefreshTokenData(token, 'strict');
+      return userId;
+    }
+
+    const { userId } = getAccessTokenData(token, 'strict');
     return userId;
   }
 
   const accessToken = getAccessToken(req);
 
-  if (!accessToken) return undefined;
+  if (accessToken) {
+    const { userId } = getAccessTokenData(accessToken) || {};
 
-  const { userId } = getAccessTokenData(accessToken) || {};
+    return userId;
+  } else {
+    const refreshToken = getRefreshToken(req);
 
-  return userId;
+    if (!refreshToken) return undefined;
+
+    const { userId } = getRefreshTokenData(refreshToken) || {};
+
+    return userId;
+  }
 }
