@@ -2,7 +2,7 @@ import schema from '@lunaticenslaved/schema';
 
 import { Context } from '#/context';
 import { User } from '#/models';
-import { TokensUtils, createHash } from '#/utils';
+import { createHash, tokens } from '#/utils';
 import { CreateAccessTokenResponse, CreateRefreshTokenResponse } from '#/utils/tokens';
 
 import { createUserWithEmailExistsError, createUserWithLoginExistsError } from './errors';
@@ -47,7 +47,7 @@ export async function signUp(data: Request, context: Context): Promise<Response>
   });
 
   // save session
-  const refreshToken = TokensUtils.createRefreshToken({ userId: createdUser.id });
+  const refreshToken = tokens.refresh.create({ userId: createdUser.id });
   const session = await context.service.session.save({
     userAgent: data.userAgent,
     userId: createdUser.id,
@@ -63,7 +63,7 @@ export async function signUp(data: Request, context: Context): Promise<Response>
   });
 
   // create access token
-  const accessToken = TokensUtils.createAccessToken({
+  const accessToken = tokens.access.create({
     userId: createdUser.id,
     sessionId: session.id,
   });

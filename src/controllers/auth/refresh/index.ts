@@ -1,12 +1,12 @@
 import { RefreshRequest, RefreshResponse } from '@lunaticenslaved/schema/actions';
 
 import { createOperation } from '#/context';
-import { RequestUtils, TokensUtils } from '#/utils';
+import { RequestUtils, tokens } from '#/utils';
 
 export const refresh = createOperation<RefreshResponse, RefreshRequest>(
   async (req, res, context) => {
     const { fingerprint } = req.body;
-    const refreshToken = TokensUtils.getRefreshToken(req, 'strict');
+    const refreshToken = tokens.refresh.get(req, 'strict');
     const session = await context.service.session.get({
       refreshToken,
     });
@@ -32,7 +32,7 @@ export const refresh = createOperation<RefreshResponse, RefreshRequest>(
     }
 
     // update session with new refresh token
-    const newRefreshToken = TokensUtils.createRefreshToken({ userId: session.userId });
+    const newRefreshToken = tokens.refresh.create({ userId: session.userId });
     const newSession = await context.service.session.save({
       ip,
       userAgent,
@@ -44,12 +44,12 @@ export const refresh = createOperation<RefreshResponse, RefreshRequest>(
     });
 
     // create access token
-    const accessToken = TokensUtils.createAccessToken({
+    const accessToken = tokens.access.create({
       userId: newSession.userId,
       sessionId: newSession.id,
     });
 
-    TokensUtils.setTokensToResponse(newRefreshToken, res);
+    tokens.setTokensToResponse(newRefreshToken, res);
 
     return {
       user: await context.service.user.get({ userId: session.userId }, 'strict'),

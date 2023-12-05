@@ -1,7 +1,7 @@
 import { SignInRequest, SignInResponse } from '@lunaticenslaved/schema/actions';
 
 import { createOperation } from '#/context';
-import { RequestUtils, TokensUtils } from '#/utils';
+import { RequestUtils, tokens } from '#/utils';
 
 import { signIn as action } from './action';
 
@@ -21,7 +21,7 @@ export const signIn = createOperation<SignInResponse, SignInRequest>(async (req,
     context,
   );
 
-  TokensUtils.setTokensToResponse(refreshToken, res);
+  tokens.setTokensToResponse(refreshToken, res);
 
   return {
     user,

@@ -1,7 +1,7 @@
 import { SignUpRequest, SignUpResponse } from '@lunaticenslaved/schema/actions';
 
 import { createOperation } from '#/context';
-import { RequestUtils, TokensUtils } from '#/utils';
+import { RequestUtils, tokens } from '#/utils';
 
 import { signUp as action } from './action';
 
@@ -12,7 +12,7 @@ export const signUp = createOperation<SignUpResponse, SignUpRequest>(async (req,
 
   const { user, accessToken, refreshToken } = await action({ ...body, userAgent, ip }, context);
 
-  TokensUtils.setTokensToResponse(refreshToken, res);
+  tokens.setTokensToResponse(refreshToken, res);
 
   return {
     user,

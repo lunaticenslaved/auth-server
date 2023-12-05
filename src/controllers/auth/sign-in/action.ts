@@ -4,7 +4,7 @@ import schema from '@lunaticenslaved/schema';
 
 import { Context } from '#/context';
 import { User } from '#/models';
-import { TokensUtils } from '#/utils';
+import { tokens } from '#/utils';
 import { CreateAccessTokenResponse, CreateRefreshTokenResponse } from '#/utils/tokens';
 
 import { createInvalidPasswordError } from './errors';
@@ -46,7 +46,7 @@ export const signIn = async (request: Request, context: Context): Promise<Respon
   }
 
   // save session
-  const refreshToken = TokensUtils.createRefreshToken({ userId: user.id });
+  const refreshToken = tokens.refresh.create({ userId: user.id });
   const session = await context.service.session.save({
     ...restData,
     userId: user.id,
@@ -55,7 +55,7 @@ export const signIn = async (request: Request, context: Context): Promise<Respon
   });
 
   // create access token
-  const accessToken = TokensUtils.createAccessToken({
+  const accessToken = tokens.access.create({
     userId: user.id,
     sessionId: session.id,
   });
