@@ -29,7 +29,7 @@ export function getUserId(req: Request, type: 'strict'): string;
 export function getUserId(req: Request, type?: 'strict'): string | undefined {
   if (type === 'strict') {
     let token = '';
-    let tokenType = 'access';
+    let tokenType: keyof typeof tokens = 'access';
 
     try {
       token = tokens.access.get(req, 'strict');
@@ -39,28 +39,23 @@ export function getUserId(req: Request, type?: 'strict'): string | undefined {
       tokenType = 'refresh';
     }
 
-    if (tokenType === 'refresh') {
-      const { userId } = tokens.refresh.getData(token, 'strict');
-      return userId;
+    return tokens[tokenType].getData(token, 'strict').userId;
+  } else {
+    let token: string | undefined = '';
+    let tokenType: keyof typeof tokens = 'access';
+
+    token = tokens.access.get(req);
+    tokenType = 'access';
+
+    if (!token) {
+      token = tokens.refresh.get(req);
+      tokenType = 'refresh';
     }
 
-    const { userId } = tokens.access.getData(token, 'strict');
-    return userId;
-  }
+    if (!token) {
+      return undefined;
+    }
 
-  const accessToken = tokens.access.get(req);
-
-  if (accessToken) {
-    const { userId } = tokens.access.getData(accessToken) || {};
-
-    return userId;
-  } else {
-    const refreshToken = tokens.refresh.get(req);
-
-    if (!refreshToken) return undefined;
-
-    const { userId } = tokens.refresh.getData(refreshToken) || {};
-
-    return userId;
+    return tokens[tokenType].getData(token)?.userId;
   }
 }

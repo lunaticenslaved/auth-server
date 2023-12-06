@@ -4,14 +4,15 @@ import jwt from 'jsonwebtoken';
 
 import { Errors } from '@lunaticenslaved/schema';
 
-import { Constants, logger } from '#/utils';
+import { logger } from '#/utils';
+import { ACCESS_TOKEN_EXPIRES_IN, ACCESS_TOKEN_SECRET } from '#/utils/constants';
 
 import { AccessTokenData, CreateRefreshTokenResponse } from './types';
 import { checkIfTokenIsValid } from './utils';
 
 export function create(data: AccessTokenData): CreateRefreshTokenResponse {
-  const token = jwt.sign(data, Constants.REFRESH_TOKEN_SECRET, {
-    expiresIn: Constants.REFRESH_TOKEN_EXPIRES_IN,
+  const token = jwt.sign(data, ACCESS_TOKEN_SECRET, {
+    expiresIn: ACCESS_TOKEN_EXPIRES_IN,
   });
 
   const { exp } = jwt.decode(token) as { exp: number };
@@ -30,7 +31,7 @@ export function getData(token: string, type?: 'strict'): AccessTokenData | undef
 
     checkIfTokenIsValid({ accessToken: token });
 
-    const data = jwt.verify(token, Constants.ACCESS_TOKEN_SECRET as string) as AccessTokenData;
+    const data = jwt.verify(token, ACCESS_TOKEN_SECRET) as AccessTokenData;
 
     logger.info(`[TOKEN] Access token data:\n   ${JSON.stringify(data, null, 2)}`);
 
