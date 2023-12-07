@@ -10,7 +10,9 @@ export const addUserAndSession =
 
     const accessToken = tokens.access.get(request);
 
-    if (accessToken && tokens.access.isValid(accessToken)) {
+    if (!accessToken) {
+      logger.warn(`[MIDDLEWARE][GET USER AND SESSION]: Access token not found`);
+    } else if (tokens.access.isValid(accessToken)) {
       const { userId, sessionId } = tokens.access.getData(accessToken) || {};
 
       logger.info(`[MIDDLEWARE][GET USER AND SESSION]: Data retrieved from access token:
@@ -21,11 +23,15 @@ export const addUserAndSession =
       request.sessionId = sessionId;
 
       return next();
+    } else {
+      logger.warn(`[MIDDLEWARE][GET USER AND SESSION]: Access token is invalid`);
     }
 
     const refreshToken = tokens.refresh.get(request);
 
     if (!refreshToken) {
+      logger.warn(`[MIDDLEWARE][GET USER AND SESSION]: Refresh token not found`);
+
       return next();
     }
 
@@ -34,8 +40,6 @@ export const addUserAndSession =
     try {
       session = await context.service.session.get({ refreshToken }, 'strict');
     } catch (e) {
-      console.log(e);
-
       logger.warn(`[MIDDLEWARE][GET USER AND SESSION]: A session with the token was not found`);
       tokens.removeTokensFormResponse(response);
 
@@ -56,7 +60,7 @@ export const addUserAndSession =
 
     try {
       const sessionId = session.id;
-      const { userId } = tokens.access.getData(refreshToken, 'strict');
+      const { userId } = tokens.refresh.getData(refreshToken, 'strict');
 
       logger.info(`[MIDDLEWARE][GET USER AND SESSION]: Data retrieved from refresh token:
     - userId: ${userId}
