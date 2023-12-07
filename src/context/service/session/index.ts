@@ -21,24 +21,21 @@ export class SessionService {
   }
 
   async save(data: SaveSessionRequest): Promise<SaveSessionResponse> {
-    const { userId, userAgent, sessionId, ip, fingerprint, expiresAt, refreshToken } = data;
+    const { userId, sessionId, ...tokenData } = data;
 
-    const session = await this.prisma.session.upsert({
-      where: { id: sessionId || '' },
-      create: {
-        userId,
-        userAgent,
-        ip,
-        fingerprint,
-        expiresAt,
-        refreshToken,
-      },
-      update: {
-        userAgent,
-      },
+    if (!sessionId) {
+      return await this.prisma.session.create({
+        data: {
+          ...tokenData,
+          userId,
+        },
+      });
+    }
+
+    return await this.prisma.session.update({
+      where: { id: sessionId },
+      data: tokenData,
     });
-
-    return session;
   }
 
   async delete({ sessionId }: DeleteSessionRequest): Promise<DeleteSessionResponse> {

@@ -13,7 +13,7 @@ type TokenDataRequest =
       accessToken: string;
     };
 
-export function checkIfTokenIsValid(req: TokenDataRequest): void {
+export function checkIfTokenIsValid(req: TokenDataRequest): boolean {
   if ('accessToken' in req) {
     logger.info(`[TOKEN] Check access token is valid`);
 
@@ -43,4 +43,6 @@ export function checkIfTokenIsValid(req: TokenDataRequest): void {
       throw new Errors.TokenInvalidError({ messages: 'Invalid token' });
     }
   }
+
+  return true;
 }

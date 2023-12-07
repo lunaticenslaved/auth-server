@@ -22,6 +22,10 @@ export function create(data: RefreshTokenData): CreateRefreshTokenResponse {
   };
 }
 
+export function isValidOrThrowError(token: string): boolean {
+  return checkIfTokenIsValid({ refreshToken: token });
+}
+
 export function getData(token: string, type: 'strict'): RefreshTokenData;
 export function getData(token: string): RefreshTokenData | undefined;
 export function getData(token: string, type?: 'strict'): RefreshTokenData | undefined {

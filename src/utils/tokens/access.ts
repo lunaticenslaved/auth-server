@@ -23,6 +23,10 @@ export function create(data: AccessTokenData): CreateRefreshTokenResponse {
   };
 }
 
+export function isValidOrThrowError(token: string): boolean {
+  return checkIfTokenIsValid({ accessToken: token });
+}
+
 export function getData(token: string, type: 'strict'): AccessTokenData;
 export function getData(token: string): AccessTokenData | undefined;
 export function getData(token: string, type?: 'strict'): AccessTokenData | undefined {
