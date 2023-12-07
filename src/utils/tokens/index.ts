@@ -13,7 +13,12 @@ export const tokens = {
   refresh,
 
   removeTokensFormResponse(res: Response) {
-    res.clearCookie('refreshToken');
+    res.cookie('refreshToken', '', {
+      httpOnly: true,
+      secure: true,
+      domain: DOMAIN,
+      expires: new Date(Date.now() - 3600),
+    });
   },
   setTokensToResponse(refreshToken: CreateRefreshTokenResponse, res: Response) {
     res.cookie('refreshToken', refreshToken.token, {

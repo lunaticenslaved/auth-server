@@ -29,4 +29,11 @@ declare global {
       MAIL_SMTP_PASSWORD: string;
     }
   }
+
+  declare namespace Express {
+    export interface Request {
+      userId?: string;
+      sessionId?: string;
+    }
+  }
 }

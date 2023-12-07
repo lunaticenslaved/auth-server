@@ -6,25 +6,12 @@ import { RequestUtils, tokens } from '#/utils';
 export const refresh = createOperation<RefreshResponse, RefreshRequest>(
   async (req, res, context) => {
     const { fingerprint } = req.body;
-    const refreshToken = tokens.refresh.get(req, 'strict');
-
-    tokens.refresh.isValidOrThrowError(refreshToken);
-
-    const session = await context.service.session.get({ refreshToken }, 'strict');
+    const sessionId = RequestUtils.getSessionId(req, 'strict');
+    const session = await context.service.session.get({ sessionId }, 'strict');
     const userAgent = RequestUtils.getUserAgent(req);
     const ip = RequestUtils.getIP(req);
-    const sessionState = await context.service.session.checkSession({
-      refreshToken,
-      fingerprint,
-    });
 
-    if (sessionState === 'expired') {
-      await context.service.session.delete({ sessionId: session.id });
-
-      throw new Error('Session expired');
-    } else if (sessionState === 'not-exists') {
-      throw new Error('Session not exists');
-    } else if (sessionState === 'unknown-fingerprint') {
+    if (fingerprint === session.fingerprint) {
       await context.service.session.delete({ sessionId: session.id });
 
       throw new Error('Unknown fingerprint');

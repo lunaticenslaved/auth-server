@@ -41,6 +41,7 @@ export const signIn = async (request: Request, context: Context): Promise<Respon
     userId: user.id,
     fingerprint: request.fingerprint,
   });
+
   if (currentSession) {
     await context.service.session.delete({ sessionId: currentSession.id });
   }

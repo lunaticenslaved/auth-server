@@ -27,6 +27,16 @@ export function isValidOrThrowError(token: string): boolean {
   return checkIfTokenIsValid({ accessToken: token });
 }
 
+export function isValid(token: string): boolean {
+  try {
+    checkIfTokenIsValid({ accessToken: token });
+
+    return true;
+  } catch {
+    return false;
+  }
+}
+
 export function getData(token: string, type: 'strict'): AccessTokenData;
 export function getData(token: string): AccessTokenData | undefined;
 export function getData(token: string, type?: 'strict'): AccessTokenData | undefined {

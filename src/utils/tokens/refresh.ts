@@ -26,6 +26,15 @@ export function isValidOrThrowError(token: string): boolean {
   return checkIfTokenIsValid({ refreshToken: token });
 }
 
+export function isValid(token: string): boolean {
+  try {
+    checkIfTokenIsValid({ refreshToken: token });
+    return false;
+  } catch {
+    return true;
+  }
+}
+
 export function getData(token: string, type: 'strict'): RefreshTokenData;
 export function getData(token: string): RefreshTokenData | undefined;
 export function getData(token: string, type?: 'strict'): RefreshTokenData | undefined {

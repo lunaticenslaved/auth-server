@@ -3,8 +3,6 @@ import { PrismaClient } from '@prisma/client';
 import { createSessionNotFoundError } from '#/errors';
 
 import {
-  CheckSessionRequest,
-  CheckSessionResponse,
   DeleteSessionRequest,
   DeleteSessionResponse,
   GetSessionRequest,
@@ -38,36 +36,20 @@ export class SessionService {
     });
   }
 
-  async delete({ sessionId }: DeleteSessionRequest): Promise<DeleteSessionResponse> {
-    await this.prisma.session.deleteMany({
-      where: { id: { equals: sessionId } },
-    });
+  async delete(data: DeleteSessionRequest): Promise<DeleteSessionResponse> {
+    console.log('DELETE SESSION', JSON.stringify(data));
+
+    if ('sessionId' in data) {
+      await this.prisma.session.deleteMany({
+        where: { id: { equals: data.sessionId } },
+      });
+    } else {
+      await this.prisma.session.deleteMany({
+        where: { refreshToken: { equals: data.refreshToken } },
+      });
+    }
   }
 
-  async checkSession({
-    refreshToken,
-    fingerprint,
-  }: CheckSessionRequest): Promise<CheckSessionResponse> {
-    const session = await this.prisma.session.findFirst({
-      where: { refreshToken },
-    });
-
-    if (!session) {
-      return 'not-exists';
-    }
-
-    if (session.fingerprint !== fingerprint) {
-      return 'unknown-fingerprint';
-    }
-
-    if (new Date() >= session.expiresAt) {
-      return 'expired';
-    }
-
-    return 'valid';
-  }
-
-  // TODO add strict
   async get(data: GetSessionRequest, type: 'strict'): Promise<GetSessionResponse>;
   async get(data: GetSessionRequest): Promise<GetSessionResponse | undefined>;
   async get(data: GetSessionRequest, type?: 'strict'): Promise<GetSessionResponse | undefined> {

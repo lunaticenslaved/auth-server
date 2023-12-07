@@ -12,9 +12,13 @@ export interface SaveSessionRequest {
 }
 
 export type DeleteSessionResponse = void;
-export interface DeleteSessionRequest {
-  sessionId: string;
-}
+export type DeleteSessionRequest =
+  | {
+      sessionId: string;
+    }
+  | {
+      refreshToken: string;
+    };
 
 export type GetSessionResponse = Session;
 export type GetSessionRequest =
@@ -28,9 +32,3 @@ export type GetSessionRequest =
       userId: string;
       fingerprint: string;
     };
-
-export type CheckSessionResponse = 'not-exists' | 'expired' | 'valid' | 'unknown-fingerprint';
-export interface CheckSessionRequest {
-  refreshToken: string;
-  fingerprint: string;
-}

@@ -2,8 +2,6 @@ import { Request } from 'express';
 
 import { Errors } from '@lunaticenslaved/schema';
 
-import { tokens } from './tokens';
-
 export function getUserAgent({ headers }: Request) {
   const userAgent = headers['user-agent'];
 
@@ -27,35 +25,23 @@ export function getIP({ headers }: Request) {
 export function getUserId(req: Request): string | undefined;
 export function getUserId(req: Request, type: 'strict'): string;
 export function getUserId(req: Request, type?: 'strict'): string | undefined {
-  if (type === 'strict') {
-    let token = '';
-    let tokenType: keyof typeof tokens = 'access';
+  const { userId } = req;
 
-    try {
-      token = tokens.access.get(req, 'strict');
-      tokenType = 'access';
-    } catch {
-      token = tokens.refresh.get(req, 'strict');
-      tokenType = 'refresh';
-    }
-
-    return tokens[tokenType].getData(token, 'strict').userId;
-  } else {
-    let token: string | undefined = '';
-    let tokenType: keyof typeof tokens = 'access';
-
-    token = tokens.access.get(req);
-    tokenType = 'access';
-
-    if (!token) {
-      token = tokens.refresh.get(req);
-      tokenType = 'refresh';
-    }
-
-    if (!token) {
-      return undefined;
-    }
-
-    return tokens[tokenType].getData(token)?.userId;
+  if (type === 'strict' && !userId) {
+    throw new Errors.UnauthorizedError({ messages: 'User not found' });
   }
+
+  return userId;
+}
+
+export function getSessionId(req: Request): string | undefined;
+export function getSessionId(req: Request, type: 'strict'): string;
+export function getSessionId(req: Request, type?: 'strict'): string | undefined {
+  const { sessionId } = req;
+
+  if (type === 'strict' && !sessionId) {
+    throw new Errors.UnauthorizedError({ messages: 'Session not found' });
+  }
+
+  return sessionId;
 }
