@@ -65,3 +65,8 @@ export function get(req: Request, type?: 'strict'): string | undefined {
 
   return token;
 }
+
+export function getExpirationDate(accessToken: string) {
+  const { exp } = jwt.decode(accessToken) as { exp: number };
+  return new Date(exp * 1000);
+}

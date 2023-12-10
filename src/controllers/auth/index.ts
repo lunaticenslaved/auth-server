@@ -6,6 +6,7 @@ import { refresh } from './refresh';
 import { resendEmail } from './resend-email';
 import { signIn } from './sign-in';
 import { signUp } from './sign-up';
+import { validateRequest } from './validate-request';
 
 export const addAuthRoutes = createRoutes(app => {
   app.post('/api/auth/sign-in', signIn);
@@ -14,4 +15,5 @@ export const addAuthRoutes = createRoutes(app => {
   app.post('/api/auth/refresh', refresh);
   app.post('/api/auth/resend-email', resendEmail);
   app.post('/api/auth/activate', activate);
+  app.post('/api/auth/validate-request', validateRequest);
 });

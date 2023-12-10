@@ -1,7 +1,6 @@
 import { NextFunction, Request, Response } from 'express';
 
 import { Context } from '#/context';
-import { Session } from '#/models';
 import { logger, tokens } from '#/utils';
 
 export const addUserAndSession =
@@ -13,14 +12,12 @@ export const addUserAndSession =
     if (!accessToken) {
       logger.warn(`[MIDDLEWARE][GET USER AND SESSION]: Access token not found`);
     } else if (tokens.access.isValid(accessToken)) {
-      const { userId, sessionId } = tokens.access.getData(accessToken) || {};
+      const { userId } = tokens.access.getData(accessToken) || {};
 
       logger.info(`[MIDDLEWARE][GET USER AND SESSION]: Data retrieved from access token:
-    - userId: ${userId}
-    - sessionId: ${sessionId}`);
+    - userId: ${userId}`);
 
       request.userId = userId;
-      request.sessionId = sessionId;
 
       return next();
     } else {
@@ -35,10 +32,8 @@ export const addUserAndSession =
       return next();
     }
 
-    let session: Session;
-
     try {
-      session = await context.service.session.get({ refreshToken }, 'strict');
+      await context.service.session.get({ refreshToken }, 'strict');
     } catch (e) {
       logger.warn(`[MIDDLEWARE][GET USER AND SESSION]: A session with the token was not found`);
       tokens.removeTokensFormResponse(response);
@@ -59,15 +54,12 @@ export const addUserAndSession =
     }
 
     try {
-      const sessionId = session.id;
       const { userId } = tokens.refresh.getData(refreshToken, 'strict');
 
       logger.info(`[MIDDLEWARE][GET USER AND SESSION]: Data retrieved from refresh token:
-    - userId: ${userId}
-    - sessionId: ${sessionId}`);
+    - userId: ${userId} `);
 
       request.userId = userId;
-      request.sessionId = sessionId;
 
       return next();
     } catch (e) {

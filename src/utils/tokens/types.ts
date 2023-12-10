@@ -9,7 +9,6 @@ export interface RefreshTokenData {
 
 export interface AccessTokenData {
   userId: string;
-  sessionId: string;
 }
 
 export interface CreateAccessTokenResponse {

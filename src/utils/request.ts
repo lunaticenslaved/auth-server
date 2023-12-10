@@ -13,11 +13,11 @@ export function getUserAgent({ headers }: Request) {
 }
 
 export function getIP({ headers }: Request) {
-  const ip = headers['x-real-ip'];
+  const ip = headers['x-real-ip'] || '';
 
-  if (!ip) {
-    throw new Errors.ValidationError({ messages: [`Unknown ip`] });
-  }
+  // if (!ip) {
+  //   throw new Errors.ValidationError({ messages: [`Unknown ip`] });
+  // }
 
   return ip as string;
 }
@@ -32,16 +32,4 @@ export function getUserId(req: Request, type?: 'strict'): string | undefined {
   }
 
   return userId;
-}
-
-export function getSessionId(req: Request): string | undefined;
-export function getSessionId(req: Request, type: 'strict'): string;
-export function getSessionId(req: Request, type?: 'strict'): string | undefined {
-  const { sessionId } = req;
-
-  if (type === 'strict' && !sessionId) {
-    throw new Errors.UnauthorizedError({ messages: 'Session not found' });
-  }
-
-  return sessionId;
 }

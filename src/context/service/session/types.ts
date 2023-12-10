@@ -8,6 +8,7 @@ export interface SaveSessionRequest {
   ip: string;
   expiresAt: Date;
   refreshToken: string;
+  accessToken: string;
   sessionId?: string;
 }
 

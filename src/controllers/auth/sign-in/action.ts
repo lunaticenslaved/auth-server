@@ -46,19 +46,18 @@ export const signIn = async (request: Request, context: Context): Promise<Respon
     await context.service.session.delete({ sessionId: currentSession.id });
   }
 
+  // create access token
+  const accessToken = tokens.access.create({ userId: user.id });
+
   // save session
   const refreshToken = tokens.refresh.create({ userId: user.id });
-  const session = await context.service.session.save({
+
+  await context.service.session.save({
     ...restData,
     userId: user.id,
     refreshToken: refreshToken.token,
     expiresAt: refreshToken.expiresAt,
-  });
-
-  // create access token
-  const accessToken = tokens.access.create({
-    userId: user.id,
-    sessionId: session.id,
+    accessToken: accessToken.token,
   });
 
   return { refreshToken, accessToken, user };

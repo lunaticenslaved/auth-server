@@ -46,26 +46,24 @@ export async function signUp(data: Request, context: Context): Promise<Response>
     password: hashedPassword,
   });
 
+  // create access token
+  const accessToken = tokens.access.create({ userId: createdUser.id });
+
   // save session
   const refreshToken = tokens.refresh.create({ userId: createdUser.id });
-  const session = await context.service.session.save({
+  await context.service.session.save({
     userAgent: data.userAgent,
     userId: createdUser.id,
     fingerprint: data.fingerprint,
     ip: data.ip,
     refreshToken: refreshToken.token,
     expiresAt: refreshToken.expiresAt,
+    accessToken: accessToken.token,
   });
 
   context.service.mail.sendUserActivationMail({
     email: createdUser.email,
     userId: createdUser.id,
-  });
-
-  // create access token
-  const accessToken = tokens.access.create({
-    userId: createdUser.id,
-    sessionId: session.id,
   });
 
   return { refreshToken, accessToken, user: createdUser };
