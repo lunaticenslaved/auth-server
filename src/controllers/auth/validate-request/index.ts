@@ -1,32 +1,41 @@
 import { ValidateRequestResponse } from '@lunaticenslaved/schema/actions';
 
 import { createOperation } from '#/context';
+import { createSessionNotFoundError } from '#/errors';
+import { Session } from '#/models';
 import { tokens } from '#/utils';
 
 export const validateRequest = createOperation<ValidateRequestResponse, void>(
   async (request, _, context) => {
-    const accessToken = tokens.access.get(request);
+    const accessToken = tokens.access.get(request) || '';
     const refreshToken = tokens.refresh.get(request) || '';
 
-    if (accessToken && !refreshToken) {
-      tokens.access.isValidOrThrowError(accessToken);
+    let session: Session | undefined = undefined;
+
+    if (accessToken && tokens.access.isValid(accessToken)) {
+      session = await context.service.session.get({ accessToken }, 'strict');
     }
 
-    tokens.refresh.isValidOrThrowError(refreshToken || '');
+    if (!session && refreshToken && tokens.refresh.isValid(refreshToken)) {
+      session = await context.service.session.get({ refreshToken }, 'strict');
+    }
 
-    const { accessToken: savedAccessToken, userId } = await context.service.session.get(
-      { refreshToken },
-      'strict',
-    );
+    if (!session) {
+      tokens.access.isValidOrThrowError(accessToken);
+      tokens.refresh.isValidOrThrowError(refreshToken);
 
-    tokens.access.isValidOrThrowError(savedAccessToken);
+      throw createSessionNotFoundError();
+    } else {
+      tokens.access.isValidOrThrowError(session.accessToken);
+      tokens.refresh.isValidOrThrowError(session.refreshToken);
+    }
 
-    const data = tokens.access.getExpirationDate(savedAccessToken);
-    const user = await context.service.user.get({ userId }, 'strict');
+    const data = tokens.access.getExpirationDate(session.accessToken);
+    const user = await context.service.user.get({ userId: session.userId }, 'strict');
 
     return {
       user,
-      token: savedAccessToken,
+      token: session.accessToken,
       expiresAt: data.toISOString(),
     };
   },

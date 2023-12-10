@@ -75,6 +75,17 @@ export class SessionService {
       }
 
       return session || undefined;
+    } else if ('accessToken' in data) {
+      const { accessToken } = data;
+      const session = await this.prisma.session.findFirst({
+        where: { accessToken },
+      });
+
+      if (!session && type === 'strict') {
+        throw createSessionNotFoundError();
+      }
+
+      return session || undefined;
     } else {
       const { fingerprint, userId } = data;
       const session = await this.prisma.session.findFirst({

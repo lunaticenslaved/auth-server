@@ -30,6 +30,9 @@ export type GetSessionRequest =
       refreshToken: string;
     }
   | {
+      accessToken: string;
+    }
+  | {
       userId: string;
       fingerprint: string;
     };
