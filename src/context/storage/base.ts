@@ -1,13 +1,16 @@
-import { UploadedFile } from 'express-fileupload';
-
-import { PutObjectCommand, S3Client } from '@aws-sdk/client-s3';
+import { PutObjectCommand, PutObjectCommandInput, S3Client } from '@aws-sdk/client-s3';
 import { randomUUID } from 'node:crypto';
 
 import { Constants } from '#/utils';
 
 export interface IObjectStorage {
-  uploadFile(file: UploadedFile): Promise<{ link: string }>;
+  uploadFile(data: UploadFileRequest): Promise<{ link: string }>;
 }
+
+type UploadFileRequest = {
+  buffer: Buffer;
+  filename: string;
+};
 
 type ObjectStorageProps = {
   accessKeyId: string;
@@ -32,11 +35,11 @@ export class ObjectStorage implements IObjectStorage {
     });
   }
 
-  async uploadFile(file: UploadedFile) {
-    const fileName = `${randomUUID()}_${file.name}`;
-    const params = {
+  async uploadFile({ filename: name, buffer }: UploadFileRequest) {
+    const fileName = `${randomUUID()}_${name}`;
+    const params: PutObjectCommandInput = {
       Bucket: this.bucketName,
-      Body: file.data,
+      Body: buffer,
       Key: fileName,
     };
 

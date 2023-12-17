@@ -1,5 +1,3 @@
-import { UploadedFile } from 'express-fileupload';
-
 import { PrismaClient } from '@prisma/client';
 
 import { Context, IMailService, IStorage } from '#/context';
@@ -9,7 +7,7 @@ jest.mock('./prisma');
 
 const storage: IStorage = {
   avatar: {
-    uploadFile(_: UploadedFile) {
+    uploadFile() {
       return Promise.resolve({ link: 'filepath' });
     },
   },

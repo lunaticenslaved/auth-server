@@ -1,5 +1,4 @@
 import express from 'express';
-import fileUpload from 'express-fileupload';
 
 import bodyParser from 'body-parser';
 import cookieParser from 'cookie-parser';
@@ -19,7 +18,6 @@ export async function createApp() {
   app.disable('x-powered-by');
   app.disable('via');
 
-  app.use(fileUpload());
   app.use(cookieParser());
 
   app.use(logRequest);

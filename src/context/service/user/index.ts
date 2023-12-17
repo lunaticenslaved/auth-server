@@ -44,7 +44,7 @@ export class UserService {
         ...(data.password ? { password: { set: data.password } } : {}),
         ...(data.login ? { login: { set: data.login } } : {}),
         ...(data.uploadedAvatar
-          ? { avatars: { create: { link: data.uploadedAvatar } } }
+          ? { avatars: { create: { link: data.uploadedAvatar, isCurrent: true } } }
           : undefined),
       },
       select,

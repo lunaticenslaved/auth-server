@@ -1,11 +1,18 @@
+import { Prisma } from '@prisma/client';
+import { Types } from '@prisma/client/runtime/library';
+
 import { User } from '#/models';
 
-export const select = {
+export const select: Prisma.UserSelect<Types.Extensions.DefaultArgs> = {
   id: true,
   login: true,
   email: true,
   isActivated: true,
   avatars: {
+    take: 1,
+    where: {
+      isCurrent: true,
+    },
     select: {
       id: true,
       link: true,
@@ -26,12 +33,14 @@ type NotPreparedUser = {
   }>;
 };
 
-export function prepare(user: NotPreparedUser): User {
+export function prepare({ avatars, ...user }: NotPreparedUser): User {
+  const [avatar] = avatars;
+
   return {
     id: user.id,
     login: user.login,
     email: user.email,
     isActivated: user.isActivated,
-    avatar: user.avatars.find(({ isCurrent }) => !!isCurrent) || null,
+    avatar: avatar || null,
   };
 }
