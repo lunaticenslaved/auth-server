@@ -115,6 +115,7 @@ export class UserService {
       select,
       take: userIds?.length || take || 20,
       where: {
+        isActivated: true,
         ...(userIds?.length ? { id: { in: userIds } } : {}),
         ...(search
           ? {

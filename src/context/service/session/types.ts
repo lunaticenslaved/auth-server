@@ -36,3 +36,8 @@ export type GetSessionRequest =
       userId: string;
       fingerprint: string;
     };
+
+export type ListSessionsResponse = Session[];
+export type ListSessionsRequest = {
+  userId: string;
+};

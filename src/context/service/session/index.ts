@@ -7,6 +7,8 @@ import {
   DeleteSessionResponse,
   GetSessionRequest,
   GetSessionResponse,
+  ListSessionsRequest,
+  ListSessionsResponse,
   SaveSessionRequest,
   SaveSessionResponse,
 } from './types';
@@ -101,5 +103,11 @@ export class SessionService {
 
       return session || undefined;
     }
+  }
+
+  async list({ userId }: ListSessionsRequest): Promise<ListSessionsResponse> {
+    return this.prisma.session.findMany({
+      where: { userId },
+    });
   }
 }
