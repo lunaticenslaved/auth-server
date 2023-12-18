@@ -120,12 +120,8 @@ export class UserService {
         ...(search
           ? {
               OR: [
-                {
-                  login: { contains: search },
-                },
-                {
-                  email: { contains: search },
-                },
+                { login: { contains: search, mode: 'insensitive' } },
+                { email: { contains: search, mode: 'insensitive' } },
               ],
             }
           : {}),
