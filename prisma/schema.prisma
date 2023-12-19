@@ -8,11 +8,12 @@ generator client {
 }
 
 model User {
-  id          String  @id @default(uuid())
-  login       String  @unique @db.VarChar(255)
-  email       String  @unique @db.VarChar(255)
-  password    String  @db.VarChar(255)
-  isActivated Boolean @default(false)
+  id          String    @id @default(uuid())
+  login       String    @unique @db.VarChar(255)
+  email       String    @unique @db.VarChar(255)
+  password    String    @db.VarChar(255)
+  isActivated Boolean   @default(false)
+  services    Service[]
 
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
@@ -21,6 +22,14 @@ model User {
   avatars  Avatar[]
 
   @@map("users")
+}
+
+model Service {
+  id    String @id @default(uuid())
+  name  String @unique @db.VarChar(30)
+  users User[]
+
+  @@map("services")
 }
 
 model Session {

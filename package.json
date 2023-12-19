@@ -18,7 +18,7 @@
   "dependencies": {
     "@aws-sdk/client-s3": "^3.441.0",
     "@lunaticenslaved/configs": "^0.0.1",
-    "@lunaticenslaved/schema": "^0.0.52",
+    "@lunaticenslaved/schema": "^0.0.54",
     "@prisma/client": "^5.5.2",
     "bcrypt": "^5.1.1",
     "body-parser": "^1.20.2",

@@ -1,3 +1,5 @@
+import { Service } from '@lunaticenslaved/schema/models';
+
 import { User } from '#/models';
 
 export type CreateUserResponse = User;
@@ -28,6 +30,8 @@ export interface ListUsersRequest {
   userIds?: string[];
   search?: string;
   take?: number;
+  services?: Service[];
+  excludeIds?: string[];
 }
 
 export type SearchUsersResponse = User[];
@@ -35,3 +39,8 @@ export interface SearchUsersRequest {
   search: string;
   take?: number;
 }
+
+export type AddInServiceRequest = {
+  userId: string;
+  service: Service;
+};

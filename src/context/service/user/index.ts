@@ -5,6 +5,7 @@ import { createUserNotFoundError } from '#/errors';
 import {
   ActivateUserRequest,
   ActivateUserResponse,
+  AddInServiceRequest,
   CreateUserRequest,
   CreateUserResponse,
   GetUserRequest,
@@ -110,13 +111,15 @@ export class UserService {
   }
 
   async list(data: ListUsersRequest): Promise<ListUsersResponse> {
-    const { userIds, search, take } = data;
+    const { userIds, search, take, services, excludeIds } = data;
     const users = await this.prisma.user.findMany({
       select,
       take: userIds?.length || take || 20,
       where: {
         isActivated: true,
         ...(userIds?.length ? { id: { in: userIds } } : {}),
+        ...(services?.length ? { services: { some: { name: { in: services } } } } : {}),
+        ...(excludeIds?.length ? { id: { notIn: excludeIds } } : {}),
         ...(search
           ? {
               OR: [
@@ -129,5 +132,14 @@ export class UserService {
     });
 
     return users.map(prepare);
+  }
+
+  async addInService({ userId, service }: AddInServiceRequest): Promise<void> {
+    await this.prisma.user.update({
+      where: { id: userId },
+      data: {
+        services: { connect: { name: service } },
+      },
+    });
   }
 }

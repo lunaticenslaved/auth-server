@@ -1,12 +1,14 @@
-import { ValidateRequestResponse } from '@lunaticenslaved/schema/actions';
+import { ValidateRequestRequest, ValidateRequestResponse } from '@lunaticenslaved/schema/actions';
 
 import { createOperation } from '#/context';
 import { createSessionNotFoundError } from '#/errors';
 import { Session } from '#/models';
 import { tokens } from '#/utils';
 
-export const validateRequest = createOperation<ValidateRequestResponse, void>(
+export const validateRequest = createOperation<ValidateRequestResponse, ValidateRequestRequest>(
   async (request, _, context) => {
+    const { service } = request.body;
+
     const accessToken = tokens.access.get(request) || '';
     const refreshToken = tokens.refresh.get(request) || '';
 
@@ -32,6 +34,7 @@ export const validateRequest = createOperation<ValidateRequestResponse, void>(
 
     const data = tokens.access.getExpirationDate(session.accessToken);
     const user = await context.service.user.get({ userId: session.userId }, 'strict');
+    await context.service.user.addInService({ userId: session.userId, service });
 
     return {
       user,

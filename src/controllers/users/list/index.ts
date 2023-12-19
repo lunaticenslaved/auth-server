@@ -4,11 +4,8 @@ import { createOperation } from '#/context';
 
 export const list = createOperation<ListUsersResponse, ListUsersRequest>(
   async (request, _, context) => {
-    const query = request.body;
-    const users =
-      'userIds' in query
-        ? await context.service.user.list({ userIds: query.userIds, search: query.search })
-        : await context.service.user.list({ search: query.search, take: query.take });
+    const { userIds, take, search, services, excludeIds } = request.body;
+    const users = await context.service.user.list({ services, userIds, search, take, excludeIds });
 
     return { users };
   },
