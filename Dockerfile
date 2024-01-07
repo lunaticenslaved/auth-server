@@ -9,7 +9,6 @@ RUN npm ci \
     && npx prisma generate \
     && npm run build
 
-
 FROM node:alpine
 WORKDIR /app
 COPY --from=build /app/package.json /app 
