@@ -20,7 +20,8 @@
     "@lunaticenslaved/configs": "^0.0.1",
     "@lunaticenslaved/schema": "^0.0.54",
     "@prisma/client": "^5.5.2",
-    "bcrypt": "^5.1.1",
+    "@types/bcryptjs": "^2.4.6",
+    "bcryptjs": "^2.4.3",
     "body-parser": "^1.20.2",
     "cookie-parser": "^1.4.6",
     "cors": "^2.8.5",
@@ -35,7 +36,6 @@
   },
   "devDependencies": {
     "@trivago/prettier-plugin-sort-imports": "^4.3.0",
-    "@types/bcrypt": "^5.0.1",
     "@types/body-parser": "^1.19.4",
     "@types/cookie-parser": "^1.4.5",
     "@types/cors": "^2.8.15",

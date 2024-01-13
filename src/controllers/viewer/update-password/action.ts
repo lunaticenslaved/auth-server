@@ -1,4 +1,4 @@
-import bcrypt from 'bcrypt';
+import bcrypt from 'bcryptjs';
 
 import { Validation, Validators } from '@lunaticenslaved/schema';
 import { UpdatePasswordRequest, UpdatePasswordResponse } from '@lunaticenslaved/schema/actions';

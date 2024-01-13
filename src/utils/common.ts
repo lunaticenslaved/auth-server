@@ -1,6 +1,6 @@
 import { Express } from 'express';
 
-import bcrypt from 'bcrypt';
+import bcrypt from 'bcryptjs';
 
 export const createRoutes = (fn: (app: Express) => void) => (app: Express) => {
   fn(app);
